@@ -9,13 +9,24 @@ resource "azurerm_key_vault" "keyvault" {
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = try(var.vault.sku, "standard")
 
-  enabled_for_deployment          = try(var.vault.enable.deployment, true)
-  enabled_for_disk_encryption     = try(var.vault.enable.disk_encryption, true)
-  enabled_for_template_deployment = try(var.vault.enable.template_deployment, true)
-  purge_protection_enabled        = try(var.vault.enable.purge_protection, true)
+  enabled_for_deployment          = try(var.vault.deployment, true)
+  enabled_for_disk_encryption     = try(var.vault.disk_encryption, true)
+  enabled_for_template_deployment = try(var.vault.template_deployment, true)
+  purge_protection_enabled        = try(var.vault.purge_protection, true)
   enable_rbac_authorization       = try(var.vault.enforce_rbac_auth, true)
-  public_network_access_enabled   = try(var.vault.enable.public_network_access, true)
+  public_network_access_enabled   = try(var.vault.public_access, true)
   soft_delete_retention_days      = try(var.vault.retention_in_days, null)
+
+  dynamic "network_acls" {
+    for_each = try(var.vault.network_acl, null) != null ? { "default" = var.vault.network_acl } : {}
+
+    content {
+      bypass                     = try(network_acls.value.bypass, "AzureServices")
+      default_action             = try(network_acls.value.default_action, "Deny")
+      ip_rules                   = try(network_acls.value.ip_rules, null)
+      virtual_network_subnet_ids = try(network_acls.value.virtual_network_subnet_ids, null)
+    }
+  }
 
   lifecycle {
     ignore_changes = [
