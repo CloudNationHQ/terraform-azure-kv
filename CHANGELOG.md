@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.1.0...v0.2.0) (2023-11-06)
+
+
+### Features
+
+* add support for network acls ([#3](https://github.com/CloudNationHQ/terraform-azure-kv/issues/3)) ([adbf119](https://github.com/CloudNationHQ/terraform-azure-kv/commit/adbf11935909b3086c68fb1936ed5a80257ed09b))
+
 ## 0.1.0 (2023-11-06)
 
 
