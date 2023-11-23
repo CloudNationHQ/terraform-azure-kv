@@ -37,9 +37,17 @@ resource "azurerm_key_vault" "keyvault" {
 
 # role assignments
 resource "azurerm_role_assignment" "current" {
+  count                = try(var.vault.current_identity_as_admin, true) ? 1 : 0
   scope                = azurerm_key_vault.keyvault.id
   role_definition_name = "Key Vault Administrator"
   principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "admins" {
+  for_each             = toset(try(var.vault.admins, {}))
+  scope                = azurerm_key_vault.keyvault.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = each.value
 }
 
 # certificate issuers
