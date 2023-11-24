@@ -17,7 +17,7 @@ module "rg" {
   }
 }
 
-resource "azurerm_client_config" "current" {}
+data "azurerm_client_config" "current" {}
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
@@ -28,7 +28,7 @@ module "kv" {
     location      = module.rg.groups.demo.location
     resourcegroup = module.rg.groups.demo.name
 
-    admins                    = [azurerm_client_config.current.object_id]
+    admins                    = [data.azurerm_client_config.current.object_id]
     current_identity_as_admin = false
   }
 }
