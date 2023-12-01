@@ -22,7 +22,6 @@ data "azurerm_client_config" "current" {}
 module "kv" {
   source  = "cloudnationhq/kv/azure"
   version = "~> 0.1"
-
   vault = {
     name          = module.naming.key_vault.name_unique
     location      = module.rg.groups.demo.location

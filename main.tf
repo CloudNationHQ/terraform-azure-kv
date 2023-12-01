@@ -44,7 +44,7 @@ resource "azurerm_role_assignment" "current" {
 }
 
 resource "azurerm_role_assignment" "admins" {
-  for_each             = toset(try(var.vault.admins, {}))
+  for_each             = try(var.vault.admins, [])
   scope                = azurerm_key_vault.keyvault.id
   role_definition_name = "Key Vault Administrator"
   principal_id         = each.value
