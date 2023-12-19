@@ -5,7 +5,7 @@ This example outlines the approach for managing certificates to enhance security
 ```hcl
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 0.2"
+  version = "~> 0.3"
 
   naming = local.naming
 
