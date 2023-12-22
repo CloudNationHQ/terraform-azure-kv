@@ -36,10 +36,14 @@ resource "azurerm_key_vault" "keyvault" {
 }
 
 # role assignments
-resource "azurerm_role_assignment" "current" {
+resource "azurerm_role_assignment" "admins" {
+  for_each = toset(
+    length(lookup(var.vault, "admins", [])) > 0 ? lookup(var.vault, "admins", []) : [data.azurerm_client_config.current.object_id]
+  )
+
   scope                = azurerm_key_vault.keyvault.id
   role_definition_name = "Key Vault Administrator"
-  principal_id         = data.azurerm_client_config.current.object_id
+  principal_id         = each.value
 }
 
 # certificate issuers
@@ -56,7 +60,7 @@ resource "azurerm_key_vault_certificate_issuer" "issuer" {
   password      = each.value.password //pat certificate authority
 
   depends_on = [
-    azurerm_role_assignment.current
+    azurerm_role_assignment.admins
   ]
 }
 
@@ -79,7 +83,7 @@ resource "azurerm_key_vault_certificate_contacts" "example" {
   }
 
   depends_on = [
-    azurerm_role_assignment.current
+    azurerm_role_assignment.admins
   ]
 }
 
@@ -116,7 +120,7 @@ resource "azurerm_key_vault_key" "kv_keys" {
   }
 
   depends_on = [
-    azurerm_role_assignment.current
+    azurerm_role_assignment.admins
   ]
 }
 
@@ -144,7 +148,7 @@ resource "azurerm_key_vault_secret" "secret" {
   key_vault_id = each.value.key_vault_id
 
   depends_on = [
-    azurerm_role_assignment.current
+    azurerm_role_assignment.admins
   ]
 }
 
@@ -168,7 +172,7 @@ resource "azurerm_key_vault_secret" "tls_public_key_secret" {
   key_vault_id = each.value.key_vault_id
 
   depends_on = [
-    azurerm_role_assignment.current
+    azurerm_role_assignment.admins
   ]
 }
 
@@ -182,7 +186,7 @@ resource "azurerm_key_vault_secret" "tls_private_key_secret" {
   key_vault_id = each.value.key_vault_id
 
   depends_on = [
-    azurerm_role_assignment.current
+    azurerm_role_assignment.admins
   ]
 }
 
@@ -215,7 +219,7 @@ resource "azurerm_key_vault_certificate" "cert" {
     }
   }
   depends_on = [
-    azurerm_role_assignment.current
+    azurerm_role_assignment.admins
   ]
 }
 
