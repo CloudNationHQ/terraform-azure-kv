@@ -5,7 +5,7 @@ This example highlights how to integrate a certificate issuer.
 ```hcl
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 0.4"
+  version = "~> 0.5"
 
   naming = local.naming
 

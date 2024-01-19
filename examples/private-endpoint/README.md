@@ -5,7 +5,7 @@ This example details a keyvault setup with a private endpoint, enhancing securit
 ```hcl
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 0.4"
+  version = "~> 0.5"
 
   vault = {
     name          = module.naming.key_vault.name_unique
