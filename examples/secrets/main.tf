@@ -30,13 +30,13 @@ module "kv" {
 
     secrets = {
       random_string = {
-        secret1 = {
+        example = {
           length  = 24
           special = false
         }
       }
       tls_keys = {
-        tls1 = {
+        example = {
           algorithm = "RSA"
           rsa_bits  = 2048
         }
