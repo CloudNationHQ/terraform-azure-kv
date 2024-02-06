@@ -3,12 +3,12 @@ data "azurerm_subscription" "current" {}
 
 # keyvault
 resource "azurerm_key_vault" "keyvault" {
-  name                = var.vault.name
-  resource_group_name = var.vault.resourcegroup
-  location            = var.vault.location
-  tenant_id           = data.azurerm_client_config.current.tenant_id
-  sku_name            = try(var.vault.sku, "standard")
-
+  name                            = var.vault.name
+  resource_group_name             = var.vault.resourcegroup
+  location                        = var.vault.location
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
+  sku_name                        = try(var.vault.sku, "standard")
+  tags                            = try(var.vault.tags, null)
   enabled_for_deployment          = try(var.vault.deployment, true)
   enabled_for_disk_encryption     = try(var.vault.disk_encryption, true)
   enabled_for_template_deployment = try(var.vault.template_deployment, true)
@@ -101,6 +101,7 @@ resource "azurerm_key_vault_key" "kv_keys" {
   curve           = each.value.curve
   not_before_date = each.value.not_before_date
   expiration_date = each.value.expiration_date
+  tags            = each.value.tags
 
   dynamic "rotation_policy" {
     for_each = try(each.value.rotation_policy, null) != null ? { "default" = each.value.rotation_policy } : {}
@@ -146,6 +147,7 @@ resource "azurerm_key_vault_secret" "secret" {
   name         = each.value.name
   value        = random_password.password[each.key].result
   key_vault_id = each.value.key_vault_id
+  tags         = each.value.tags
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -170,6 +172,7 @@ resource "azurerm_key_vault_secret" "tls_public_key_secret" {
   name         = "${each.value.name}-pub"
   value        = tls_private_key.tls_key[each.key].public_key_openssh
   key_vault_id = each.value.key_vault_id
+  tags         = each.value.tags
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -184,6 +187,7 @@ resource "azurerm_key_vault_secret" "tls_private_key_secret" {
   name         = "${each.value.name}-priv"
   value        = tls_private_key.tls_key[each.key].private_key_pem
   key_vault_id = each.value.key_vault_id
+  tags         = each.value.tags
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -198,6 +202,7 @@ resource "azurerm_key_vault_certificate" "cert" {
 
   name         = each.value.name
   key_vault_id = each.value.key_vault_id
+  tags         = each.value.tags
 
   certificate_policy {
     issuer_parameters {
@@ -231,6 +236,7 @@ resource "azurerm_private_endpoint" "endpoint" {
   location            = var.vault.location
   resource_group_name = var.vault.resourcegroup
   subnet_id           = var.vault.private_endpoint.subnet
+  tags                = try(var.vault.private_endpoint.tags, null)
 
   private_service_connection {
     name                           = "endpoint"
