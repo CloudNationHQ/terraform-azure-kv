@@ -18,7 +18,7 @@ locals {
     for k_key, k in try(var.vault.keys, {}) : {
 
       k_key           = k_key
-      name            = "${var.naming.key_vault_key}-${k_key}"
+      name            = try(k.name, join("-", [var.naming.key_vault_key, k_key]))
       key_type        = k.key_type
       key_opts        = k.key_opts
       key_size        = try(k.key_size, null)
@@ -36,7 +36,7 @@ locals {
     for secret_key, secret in try(var.vault.secrets.random_string, {}) : {
 
       secret_key   = secret_key
-      name         = "${var.naming.key_vault_secret}-${secret_key}"
+      name         = try(secret.name, join("-", [var.naming.key_vault_secret, secret_key]))
       length       = secret.length
       special      = try(secret.special, true)
       min_lower    = try(secret.min_lower, 5)
@@ -53,7 +53,7 @@ locals {
     for tls_key, tls in try(var.vault.secrets.tls_keys, {}) : {
       tls_key      = tls_key
       algorithm    = tls.algorithm
-      name         = "${var.naming.key_vault_secret}-${tls_key}"
+      name         = try(tls.name, join("-", [var.naming.key_vault_secret, tls_key]))
       rsa_bits     = try(tls.rsa_bits, 2048)
       key_vault_id = azurerm_key_vault.keyvault.id
     }
@@ -65,7 +65,7 @@ locals {
     for cert_key, cert in try(var.vault.certs, {}) : {
 
       cert_key           = cert_key
-      name               = "${var.naming.key_vault_certificate}-${cert_key}"
+      name               = try(cert.name, join("-", [var.naming.key_vault_certificate, cert_key]))
       issuer             = cert.issuer
       exportable         = cert.exportable
       key_type           = try(cert.key_type, "RSA")

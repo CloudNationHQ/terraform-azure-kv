@@ -29,7 +29,7 @@ module "kv" {
     resourcegroup = module.rg.groups.demo.name
 
     keys = {
-      demo = {
+      example = {
         key_type = "RSA"
         key_size = 2048
 
