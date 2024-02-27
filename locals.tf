@@ -36,16 +36,19 @@ locals {
   secrets = flatten([
     for secret_key, secret in try(var.vault.secrets.random_string, {}) : {
 
-      secret_key   = secret_key
-      name         = try(secret.name, join("-", [var.naming.key_vault_secret, secret_key]))
-      length       = secret.length
-      special      = try(secret.special, true)
-      min_lower    = try(secret.min_lower, 5)
-      min_upper    = try(secret.min_upper, 7)
-      min_special  = try(secret.min_special, 4)
-      min_numeric  = try(secret.min_numeric, 5)
-      key_vault_id = azurerm_key_vault.keyvault.id
-      tags         = try(secret.tags, null)
+      secret_key      = secret_key
+      name            = try(secret.name, join("-", [var.naming.key_vault_secret, secret_key]))
+      length          = secret.length
+      special         = try(secret.special, true)
+      min_lower       = try(secret.min_lower, 5)
+      min_upper       = try(secret.min_upper, 7)
+      min_special     = try(secret.min_special, 4)
+      min_numeric     = try(secret.min_numeric, 5)
+      key_vault_id    = azurerm_key_vault.keyvault.id
+      tags            = try(secret.tags, null)
+      content_type    = try(secret.content_type, null)
+      expiration_date = try(secret.expiration_date, null)
+      not_before_date = try(secret.not_before_date, null)
     }
   ])
 }
@@ -53,12 +56,15 @@ locals {
 locals {
   tls = flatten([
     for tls_key, tls in try(var.vault.secrets.tls_keys, {}) : {
-      tls_key      = tls_key
-      algorithm    = tls.algorithm
-      name         = try(tls.name, join("-", [var.naming.key_vault_secret, tls_key]))
-      rsa_bits     = try(tls.rsa_bits, 2048)
-      key_vault_id = azurerm_key_vault.keyvault.id
-      tags         = try(tls.tags, null)
+      tls_key         = tls_key
+      algorithm       = tls.algorithm
+      name            = try(tls.name, join("-", [var.naming.key_vault_secret, tls_key]))
+      rsa_bits        = try(tls.rsa_bits, 2048)
+      key_vault_id    = azurerm_key_vault.keyvault.id
+      tags            = try(tls.tags, null)
+      content_type    = try(tls.content_type, null)
+      expiration_date = try(tls.expiration_date, null)
+      not_before_date = try(tls.not_before_date, null)
     }
   ])
 }

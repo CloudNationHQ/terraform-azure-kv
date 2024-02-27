@@ -48,7 +48,8 @@ module "kv" {
     name          = module.naming.key_vault.name_unique
     location      = module.rg.groups.demo.location
     resourcegroup = module.rg.groups.demo.name
-    public_access = false
+
+    public_network_access_enabled = false
 
     network_acl = {
       virtual_network_subnet_ids = [module.network.subnets.sn1.id]

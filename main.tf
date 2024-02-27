@@ -9,13 +9,13 @@ resource "azurerm_key_vault" "keyvault" {
   tenant_id                       = data.azurerm_client_config.current.tenant_id
   sku_name                        = try(var.vault.sku, "standard")
   tags                            = try(var.vault.tags, null)
-  enabled_for_deployment          = try(var.vault.deployment, true)
-  enabled_for_disk_encryption     = try(var.vault.disk_encryption, true)
-  enabled_for_template_deployment = try(var.vault.template_deployment, true)
-  purge_protection_enabled        = try(var.vault.purge_protection, true)
-  enable_rbac_authorization       = try(var.vault.enforce_rbac_auth, true)
-  public_network_access_enabled   = try(var.vault.public_access, true)
-  soft_delete_retention_days      = try(var.vault.retention_in_days, null)
+  enabled_for_deployment          = try(var.vault.enabled_for_deployment, true)
+  enabled_for_disk_encryption     = try(var.vault.enabled_for_disk_encryption, true)
+  enabled_for_template_deployment = try(var.vault.enabled_for_template_deployment, true)
+  purge_protection_enabled        = try(var.vault.purge_protection_enabled, true)
+  enable_rbac_authorization       = try(var.vault.enable_rbac_authorization, true)
+  public_network_access_enabled   = try(var.vault.public_network_access_enabled, true)
+  soft_delete_retention_days      = try(var.vault.soft_delete_retention_in_days, null)
 
   dynamic "network_acls" {
     for_each = try(var.vault.network_acl, null) != null ? { "default" = var.vault.network_acl } : {}
@@ -144,10 +144,13 @@ resource "azurerm_key_vault_secret" "secret" {
     for secret in local.secrets : secret.secret_key => secret
   }
 
-  name         = each.value.name
-  value        = random_password.password[each.key].result
-  key_vault_id = each.value.key_vault_id
-  tags         = each.value.tags
+  name            = each.value.name
+  value           = random_password.password[each.key].result
+  key_vault_id    = each.value.key_vault_id
+  tags            = each.value.tags
+  content_type    = each.value.content_type
+  expiration_date = each.value.expiration_date
+  not_before_date = each.value.not_before_date
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -169,10 +172,13 @@ resource "azurerm_key_vault_secret" "tls_public_key_secret" {
     for item in local.tls : item.tls_key => item
   }
 
-  name         = "${each.value.name}-pub"
-  value        = tls_private_key.tls_key[each.key].public_key_openssh
-  key_vault_id = each.value.key_vault_id
-  tags         = each.value.tags
+  name            = "${each.value.name}-pub"
+  value           = tls_private_key.tls_key[each.key].public_key_openssh
+  key_vault_id    = each.value.key_vault_id
+  tags            = each.value.tags
+  not_before_date = each.value.not_before_date
+  expiration_date = each.value.expiration_date
+  content_type    = each.value.content_type
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -184,10 +190,13 @@ resource "azurerm_key_vault_secret" "tls_private_key_secret" {
     for item in local.tls : item.tls_key => item
   }
 
-  name         = "${each.value.name}-priv"
-  value        = tls_private_key.tls_key[each.key].private_key_pem
-  key_vault_id = each.value.key_vault_id
-  tags         = each.value.tags
+  name            = "${each.value.name}-priv"
+  value           = tls_private_key.tls_key[each.key].private_key_pem
+  key_vault_id    = each.value.key_vault_id
+  tags            = each.value.tags
+  content_type    = each.value.content_type
+  not_before_date = each.value.not_before_date
+  expiration_date = each.value.expiration_date
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -232,11 +241,12 @@ resource "azurerm_key_vault_certificate" "cert" {
 resource "azurerm_private_endpoint" "endpoint" {
   for_each = contains(keys(var.vault), "private_endpoint") ? { "default" = var.vault.private_endpoint } : {}
 
-  name                = var.vault.private_endpoint.name
-  location            = var.vault.location
-  resource_group_name = var.vault.resourcegroup
-  subnet_id           = var.vault.private_endpoint.subnet
-  tags                = try(var.vault.private_endpoint.tags, null)
+  name                          = var.vault.private_endpoint.name
+  location                      = var.vault.location
+  resource_group_name           = var.vault.resourcegroup
+  subnet_id                     = var.vault.private_endpoint.subnet
+  tags                          = try(var.vault.private_endpoint.tags, null)
+  custom_network_interface_name = try(var.vault.private_endpoint.custom_network_interface_name, null)
 
   private_service_connection {
     name                           = "endpoint"
