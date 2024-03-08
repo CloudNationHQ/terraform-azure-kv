@@ -27,7 +27,7 @@ locals {
       expiration_date = try(k.expiration_date, null)
       key_vault_id    = azurerm_key_vault.keyvault.id
       rotation_policy = try(k.rotation_policy, null)
-      tags            = try(k.tags, null)
+      tags            = try(k.tags, var.tags, null)
     }
   ])
 }
@@ -45,7 +45,7 @@ locals {
       min_special     = try(secret.min_special, 4)
       min_numeric     = try(secret.min_numeric, 5)
       key_vault_id    = azurerm_key_vault.keyvault.id
-      tags            = try(secret.tags, null)
+      tags            = try(secret.tags, var.tags, null)
       content_type    = try(secret.content_type, null)
       expiration_date = try(secret.expiration_date, null)
       not_before_date = try(secret.not_before_date, null)
@@ -61,7 +61,7 @@ locals {
       name            = try(tls.name, join("-", [var.naming.key_vault_secret, tls_key]))
       rsa_bits        = try(tls.rsa_bits, 2048)
       key_vault_id    = azurerm_key_vault.keyvault.id
-      tags            = try(tls.tags, null)
+      tags            = try(tls.tags, var.tags, null)
       content_type    = try(tls.content_type, null)
       expiration_date = try(tls.expiration_date, null)
       not_before_date = try(tls.not_before_date, null)
@@ -85,7 +85,7 @@ locals {
       subject            = cert.subject
       validity_in_months = cert.validity_in_months
       key_vault_id       = azurerm_key_vault.keyvault.id
-      tags               = try(cert.tags, null)
+      tags               = try(cert.tags, var.tags, null)
     }
   ])
 }

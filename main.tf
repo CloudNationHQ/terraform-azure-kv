@@ -4,11 +4,11 @@ data "azurerm_subscription" "current" {}
 # keyvault
 resource "azurerm_key_vault" "keyvault" {
   name                            = var.vault.name
-  resource_group_name             = var.vault.resourcegroup
-  location                        = var.vault.location
+  resource_group_name             = coalesce(lookup(var.vault, "resourcegroup", null), var.resourcegroup)
+  location                        = coalesce(lookup(var.vault, "location", null), var.location)
   tenant_id                       = data.azurerm_client_config.current.tenant_id
   sku_name                        = try(var.vault.sku, "standard")
-  tags                            = try(var.vault.tags, null)
+  tags                            = try(var.vault.tags, var.tags, null)
   enabled_for_deployment          = try(var.vault.enabled_for_deployment, true)
   enabled_for_disk_encryption     = try(var.vault.enabled_for_disk_encryption, true)
   enabled_for_template_deployment = try(var.vault.enabled_for_template_deployment, true)
@@ -57,7 +57,7 @@ resource "azurerm_key_vault_certificate_issuer" "issuer" {
   key_vault_id  = each.value.key_vault_id
   provider_name = each.value.provider_name
   account_id    = each.value.account_id
-  password      = each.value.password //pat certificate authority
+  password      = each.value.password #pat certificate authority
 
   depends_on = [
     azurerm_role_assignment.admins
