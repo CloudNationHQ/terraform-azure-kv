@@ -18,8 +18,6 @@ module "rg" {
 }
 
 module "kv" {
-  #source  = "cloudnationhq/kv/azure"
-  #version = "~> 0.1"
   source = "../../"
 
   naming = local.naming
