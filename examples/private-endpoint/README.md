@@ -3,40 +3,29 @@ This example details a keyvault setup with a private endpoint, enhancing securit
 ## Usage: private endpoint
 
 ```hcl
-module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 0.7"
+module "privatelink" {
+  source  = "cloudnationhq/pe/azure"
+  version = "~> 0.1"
 
-  vault = {
-    name          = module.naming.key_vault.name_unique
-    location      = module.rg.groups.demo.location
-    resourcegroup = module.rg.groups.demo.name
+  resourcegroup = module.rg.groups.demo.name
+  location      = module.rg.groups.demo.location
 
-    private_endpoint = {
-      name         = module.naming.private_endpoint.name
-      dns_zones    = [module.private_dns.zone.id]
-      subnet       = module.network.subnets.sn1.id
-      subresources = ["vault"]
-    }
-  }
+  endpoints = local.endpoints
 }
 ```
 
-To enable private link, the below private dns submodule can be employed:
+The module uses the below locals for configuration:
 
 ```hcl
-module "private_dns" {
-  source  = "cloudnationhq/kv/azure//modules/private-dns"
-  version = "~> 0.1"
-
-  providers = {
-    azurerm = azurerm.connectivity
-  }
-
-  zone = {
-    name          = "privatelink.vaultcore.azure.net"
-    resourcegroup = "rg-dns-shared-001"
-    vnet          = module.network.vnet.id
+locals {
+  endpoints = {
+    vault = {
+      name                           = module.naming.private_endpoint.name
+      subnet_id                      = module.network.subnets.sn1.id
+      private_connection_resource_id = module.kv.vault.id
+      private_dns_zone_ids           = [module.private_dns.zones.vault.id]
+      subresource_names              = ["vault"]
+    }
   }
 }
 ```
