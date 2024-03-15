@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.7.0...v0.8.0) (2024-03-15)
+
+
+### Features
+
+* **deps:** bump google.golang.org/protobuf in /tests ([#28](https://github.com/CloudNationHQ/terraform-azure-kv/issues/28)) ([fcd881d](https://github.com/CloudNationHQ/terraform-azure-kv/commit/fcd881d7e816d2d0afc34ca44bbaf3f73f676e41))
+* small refactor private endpoints ([#29](https://github.com/CloudNationHQ/terraform-azure-kv/issues/29)) ([6d1d4fd](https://github.com/CloudNationHQ/terraform-azure-kv/commit/6d1d4fdc96025ecf9e7b90dea9ae0467a3b01e1b))
+
 ## [0.7.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.6.0...v0.7.0) (2024-03-08)
 
 
