@@ -236,27 +236,3 @@ resource "azurerm_key_vault_certificate" "cert" {
     azurerm_role_assignment.admins
   ]
 }
-
-# private endpoint
-resource "azurerm_private_endpoint" "endpoint" {
-  for_each = contains(keys(var.vault), "private_endpoint") ? { "default" = var.vault.private_endpoint } : {}
-
-  name                          = var.vault.private_endpoint.name
-  location                      = var.vault.location
-  resource_group_name           = var.vault.resourcegroup
-  subnet_id                     = var.vault.private_endpoint.subnet
-  tags                          = try(var.vault.private_endpoint.tags, null)
-  custom_network_interface_name = try(var.vault.private_endpoint.custom_network_interface_name, null)
-
-  private_service_connection {
-    name                           = "endpoint"
-    is_manual_connection           = try(each.value.is_manual_connection, false)
-    private_connection_resource_id = azurerm_key_vault.keyvault.id
-    subresource_names              = each.value.subresources
-  }
-
-  private_dns_zone_group {
-    name                 = "default"
-    private_dns_zone_ids = var.vault.private_endpoint.dns_zones
-  }
-}

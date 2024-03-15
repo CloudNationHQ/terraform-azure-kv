@@ -39,7 +39,6 @@ A last key goal is to separate logic from configuration in the module, thereby e
 | :-- | :-- |
 | [azurerm_key_vault](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) | resource |
 | [azurerm_role_assignment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
-| [random_string](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [random_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [azurerm_key_vault_key](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_key) | resource |
 | [tls_private_key](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
@@ -47,11 +46,8 @@ A last key goal is to separate logic from configuration in the module, thereby e
 | [azurerm_key_vault_secret](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_key_vault_certificate_issuer](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_certificate_issuer) | resource |
 | [azurerm_key_vault_certificate_contacts](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_certificate_contacts) | resource |
-| [azurerm_private_endpoint](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_subscription](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 | [azurerm_client_config](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
-| [azurerm_private_dns_zone](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/private_dns_zone) | data source |
-| [azurerm_private_dns_zone_virtual_network_link](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 
 ## Inputs
 
@@ -91,7 +87,7 @@ Using a dedicated module, we've developed a naming convention for resources that
 
 Full examples detailing all usages, along with integrations with dependency modules, are located in the examples directory
 
-To integrate seamlessly with the enterprise scale's centrally managed private dns zones within a connectivity subscription, you can employ the private dns submodule, designed to work effectively with an aliased provider.
+To streamline integration with the enterprise scale module, private endpoints can also make use of [existing zones](https://github.com/CloudNationHQ/terraform-azure-pdns/tree/main/examples/existing-zone).
 
 ## Authors
 
