@@ -33,7 +33,7 @@ locals {
 }
 
 locals {
-  secrets = flatten([
+  secrets_random = flatten([
     for secret_key, secret in try(var.vault.secrets.random_string, {}) : {
 
       secret_key      = secret_key
@@ -51,6 +51,19 @@ locals {
       not_before_date = try(secret.not_before_date, null)
     }
   ])
+  secrets = flatten([
+    for secret_key, secret in lookup(var.vault, "secrets", {}) : {
+
+      secret_key      = secret_key
+      name            = try(secret.name, join("-", [var.naming.key_vault_secret, secret_key]))
+      value           = secret.value
+      key_vault_id    = azurerm_key_vault.keyvault.id
+      tags            = try(secret.tags, var.tags, null)
+      content_type    = try(secret.content_type, null)
+      expiration_date = try(secret.expiration_date, null)
+      not_before_date = try(secret.not_before_date, null)
+    }
+  if secret_key != "random_string"])
 }
 
 locals {

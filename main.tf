@@ -128,7 +128,7 @@ resource "azurerm_key_vault_key" "kv_keys" {
 # random passwords
 resource "random_password" "password" {
   for_each = {
-    for secret in local.secrets : secret.secret_key => secret
+    for secret in local.secrets_random : secret.secret_key => secret
   }
 
   length      = each.value.length
@@ -139,13 +139,31 @@ resource "random_password" "password" {
   min_numeric = each.value.min_numeric
 }
 
+resource "azurerm_key_vault_secret" "secret_random" {
+  for_each = {
+    for secret in local.secrets_random : secret.secret_key => secret
+  }
+
+  name            = each.value.name
+  value           = random_password.password[each.key].result
+  key_vault_id    = each.value.key_vault_id
+  tags            = each.value.tags
+  content_type    = each.value.content_type
+  expiration_date = each.value.expiration_date
+  not_before_date = each.value.not_before_date
+
+  depends_on = [
+    azurerm_role_assignment.admins
+  ]
+}
+
 resource "azurerm_key_vault_secret" "secret" {
   for_each = {
     for secret in local.secrets : secret.secret_key => secret
   }
 
   name            = each.value.name
-  value           = random_password.password[each.key].result
+  value           = each.value.value
   key_vault_id    = each.value.key_vault_id
   tags            = each.value.tags
   content_type    = each.value.content_type
