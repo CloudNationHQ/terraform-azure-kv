@@ -18,6 +18,11 @@ output "secrets" {
   value       = azurerm_key_vault_secret.secret
 }
 
+output "certs" {
+  description = "contains all certificates"
+  value       = azurerm_key_vault_certificate.cert
+}
+
 output "tls_public_keys" {
   description = "contains all tls public keys"
   value       = azurerm_key_vault_secret.tls_public_key_secret
