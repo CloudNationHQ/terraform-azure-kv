@@ -15,7 +15,12 @@ output "keys" {
 
 output "secrets" {
   description = "contains all secrets"
-  value       = azurerm_key_vault_secret.secret
+  value       = merge(azurerm_key_vault_secret.secret_defined, azurerm_key_vault_secret.secret)
+}
+
+output "certs" {
+  description = "contains all certificates"
+  value       = azurerm_key_vault_certificate.cert
 }
 
 output "tls_public_keys" {
