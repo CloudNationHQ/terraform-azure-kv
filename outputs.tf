@@ -15,7 +15,7 @@ output "keys" {
 
 output "secrets" {
   description = "contains all secrets"
-  value       = merge(azurerm_key_vault_secret.secret_random, azurerm_key_vault_secret.secret)
+  value       = merge(azurerm_key_vault_secret.secret_defined, azurerm_key_vault_secret.secret)
 }
 
 output "certs" {

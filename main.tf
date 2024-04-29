@@ -139,7 +139,7 @@ resource "random_password" "password" {
   min_numeric = each.value.min_numeric
 }
 
-resource "azurerm_key_vault_secret" "secret_random" {
+resource "azurerm_key_vault_secret" "secret" {
   for_each = {
     for secret in local.secrets_random : secret.secret_key => secret
   }
@@ -157,7 +157,7 @@ resource "azurerm_key_vault_secret" "secret_random" {
   ]
 }
 
-resource "azurerm_key_vault_secret" "secret" {
+resource "azurerm_key_vault_secret" "secret_defined" {
   for_each = {
     for secret in local.secrets : secret.secret_key => secret
   }
