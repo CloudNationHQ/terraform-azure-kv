@@ -5,7 +5,7 @@ This example shows how to use network ACLs to enhance security with secure acces
 ```hcl
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 0.8"
+  version = "~> 0.9"
 
   vault = {
     name          = module.naming.key_vault.name_unique
