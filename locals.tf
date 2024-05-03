@@ -63,7 +63,7 @@ locals {
       expiration_date = try(secret.expiration_date, null)
       not_before_date = try(secret.not_before_date, null)
     }
-  if secret_key != "random_string"])
+  if secret_key != "random_string" || secret_key != "tls_keys"])
 }
 
 locals {
