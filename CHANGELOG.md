@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.9.0...v0.9.1) (2024-05-03)
+
+
+### Bug Fixes
+
+* small fix to skip tls keys ([#39](https://github.com/CloudNationHQ/terraform-azure-kv/issues/39)) ([b4b0f7a](https://github.com/CloudNationHQ/terraform-azure-kv/commit/b4b0f7a77dfaf2f6ec06bddc45db9623eb64012e))
+
 ## [0.9.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.8.0...v0.9.0) (2024-04-29)
 
 
