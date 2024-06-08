@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.9.1...v0.10.0) (2024-06-07)
+
+
+### Features
+
+* add pull request template ([#42](https://github.com/CloudNationHQ/terraform-azure-kv/issues/42)) ([ffa6f87](https://github.com/CloudNationHQ/terraform-azure-kv/commit/ffa6f871b7eb010f018df39053fc16bfe2a9c5de))
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#41](https://github.com/CloudNationHQ/terraform-azure-kv/issues/41)) ([fb2a72b](https://github.com/CloudNationHQ/terraform-azure-kv/commit/fb2a72b518a604e152c6b9d9777e4c9a02303f5e))
+
 ## [0.9.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.9.0...v0.9.1) (2024-05-03)
 
 
