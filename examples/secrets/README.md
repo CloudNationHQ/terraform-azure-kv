@@ -5,7 +5,7 @@ This example highlights the streamlined creation and secure management of secret
 ```hcl
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 0.10"
+  version = "~> 0.11"
 
   naming = local.naming
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.11.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.10.0...v0.11.0) (2024-07-02)
+
+
+### Features
+
+* add issue template ([#48](https://github.com/CloudNationHQ/terraform-azure-kv/issues/48)) ([d413469](https://github.com/CloudNationHQ/terraform-azure-kv/commit/d413469ad6b197afe2b83236f4c8a0cdf869afec))
+* **deps:** bump github.com/Azure/azure-sdk-for-go/sdk/azidentity ([#44](https://github.com/CloudNationHQ/terraform-azure-kv/issues/44)) ([f77b159](https://github.com/CloudNationHQ/terraform-azure-kv/commit/f77b159636481ff1fb13303973ee4d38e484f321))
+* **deps:** bump github.com/Azure/azure-sdk-for-go/sdk/azidentity ([#45](https://github.com/CloudNationHQ/terraform-azure-kv/issues/45)) ([204c4e6](https://github.com/CloudNationHQ/terraform-azure-kv/commit/204c4e60b5ac0f0f81d32ba935d9d818e75f6d39))
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#47](https://github.com/CloudNationHQ/terraform-azure-kv/issues/47)) ([39a428b](https://github.com/CloudNationHQ/terraform-azure-kv/commit/39a428bca29bc814430260aeb487dcb176b2cbb2))
+
 ## [0.10.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.9.1...v0.10.0) (2024-06-07)
 
 
