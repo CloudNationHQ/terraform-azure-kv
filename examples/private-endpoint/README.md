@@ -5,7 +5,7 @@ This example details a keyvault setup with a private endpoint, enhancing securit
 ```hcl
 module "privatelink" {
   source  = "cloudnationhq/pe/azure"
-  version = "~> 0.11"
+  version = "~> 0.12"
 
   resourcegroup = module.rg.groups.demo.name
   location      = module.rg.groups.demo.location
