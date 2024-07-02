@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.11.0...v0.12.0) (2024-07-02)
+
+
+### Features
+
+* update version of random & tls providers ([#50](https://github.com/CloudNationHQ/terraform-azure-kv/issues/50)) ([c03a62d](https://github.com/CloudNationHQ/terraform-azure-kv/commit/c03a62d385b2b16432cebdbec1de1d8e54ce927b))
+
 ## [0.11.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.10.0...v0.11.0) (2024-07-02)
 
 
