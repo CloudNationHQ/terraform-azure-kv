@@ -5,7 +5,7 @@ This example shows how to simplify key lifecycle management and enhance security
 ```hcl
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 0.12"
+  version = "~> 0.13"
 
   naming = local.naming
 
