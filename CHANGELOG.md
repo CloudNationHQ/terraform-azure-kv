@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.12.0...v0.13.0) (2024-07-04)
+
+
+### Features
+
+* update contribution docs ([#54](https://github.com/CloudNationHQ/terraform-azure-kv/issues/54)) ([b06196d](https://github.com/CloudNationHQ/terraform-azure-kv/commit/b06196d4d89cc64e24d6339668d9a00ef9572530))
+
 ## [0.12.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.11.0...v0.12.0) (2024-07-02)
 
 
