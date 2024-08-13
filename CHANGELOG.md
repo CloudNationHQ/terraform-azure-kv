@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.13.0...v0.14.0) (2024-08-13)
+
+
+### Features
+
+* added code of conduct and security documentation ([#57](https://github.com/CloudNationHQ/terraform-azure-kv/issues/57)) ([1895413](https://github.com/CloudNationHQ/terraform-azure-kv/commit/1895413641bbaf9b13084797c5174ba47e895375))
+
 ## [0.13.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.12.0...v0.13.0) (2024-08-13)
 
 
