@@ -5,11 +5,22 @@
 
 ### ⚠ BREAKING CHANGES
 
-* * data structure has changed due to renaming of properties and output variables.
+* data structure has changed due to renaming of properties and output variables.
 
 ### Features
 
 * aligned several properties ([#60](https://github.com/CloudNationHQ/terraform-azure-kv/issues/60)) ([17499ee](https://github.com/CloudNationHQ/terraform-azure-kv/commit/17499ee05026d38d943b7e65868adc7db72f2d34))
+
+### Upgrade from v0.14.0 to v1.0.0:
+
+- Update module reference to: `version = "~> 1.0"`
+- Rename properties in vault object:
+  - resourcegroup -> resource_group
+  - sku -> sku_name
+- Rename variable:
+  - resourcegroup -> resource_group
+- Rename output variable:
+  - subscriptionId -> subscription_id'
 
 ## [0.14.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.13.0...v0.14.0) (2024-08-13)
 
