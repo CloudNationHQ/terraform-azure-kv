@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.14.0...v1.0.0) (2024-08-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* * data structure has changed due to renaming of properties and output variables.
+
+### Features
+
+* aligned several properties ([#60](https://github.com/CloudNationHQ/terraform-azure-kv/issues/60)) ([17499ee](https://github.com/CloudNationHQ/terraform-azure-kv/commit/17499ee05026d38d943b7e65868adc7db72f2d34))
+
 ## [0.14.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.13.0...v0.14.0) (2024-08-13)
 
 
