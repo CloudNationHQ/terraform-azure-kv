@@ -18,14 +18,15 @@ module "rg" {
 }
 
 module "kv" {
-  source = "../../"
+  source  = "cloudnationhq/kv/azure"
+  version = "~> 1.0"
 
   naming = local.naming
 
   vault = {
-    name          = module.naming.key_vault.name_unique
-    location      = module.rg.groups.demo.location
-    resourcegroup = module.rg.groups.demo.name
+    name           = module.naming.key_vault.name_unique
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
 
     certs   = local.certs
     keys    = local.keys
