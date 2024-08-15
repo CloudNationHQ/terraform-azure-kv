@@ -40,12 +40,12 @@ module "network" {
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 0.1"
+  version = "~> 1.0"
 
   vault = {
-    name          = module.naming.key_vault.name_unique
-    location      = module.rg.groups.demo.location
-    resourcegroup = module.rg.groups.demo.name
+    name           = module.naming.key_vault.name_unique
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
 
     public_network_access_enabled = false
   }
@@ -77,5 +77,13 @@ module "privatelink" {
   resourcegroup = module.rg.groups.demo.name
   location      = module.rg.groups.demo.location
 
-  endpoints = local.endpoints
+  endpoints = {
+    vault = {
+      name                           = module.naming.private_endpoint.name
+      subnet_id                      = module.network.subnets.sn1.id
+      private_connection_resource_id = module.kv.vault.id
+      private_dns_zone_ids           = [module.private_dns.zones.vault.id]
+      subresource_names              = ["vault"]
+    }
+  }
 }

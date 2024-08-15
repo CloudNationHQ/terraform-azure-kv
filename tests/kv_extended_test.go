@@ -46,7 +46,7 @@ func TestVault(t *testing.T) {
 		terraform.InitAndApply(t, tfOpts)
 
 		vaultMap := terraform.OutputMap(t, tfOpts, "vault")
-		subscriptionID := terraform.Output(t, tfOpts, "subscriptionId")
+		subscriptionID := terraform.Output(t, tfOpts, "subscription_id")
 
 		vaultDetails := &VaultDetails{
 			ResourceGroupName: vaultMap["resource_group_name"],

@@ -3,6 +3,6 @@ output "vault" {
   sensitive = true
 }
 
-output "subscriptionId" {
-  value = module.kv.subscriptionId
+output "subscription_id" {
+  value = module.kv.subscription_id
 }

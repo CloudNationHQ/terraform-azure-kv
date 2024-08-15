@@ -19,15 +19,19 @@ module "rg" {
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 0.1"
+  version = "~> 1.0"
 
   vault = {
-    name          = module.naming.key_vault.name_unique
-    location      = module.rg.groups.demo.location
-    resourcegroup = module.rg.groups.demo.name
+    name           = module.naming.key_vault.name_unique
+    location       = module.rg.groups.demo.location
+    resource_group = module.rg.groups.demo.name
 
     issuers = {
-      DigiCert = { org_id = "12345", account_id = "12345", password = "12345" }
+      DigiCert = {
+        org_id     = "12345"
+        account_id = "12345"
+        password   = "12345"
+      }
     }
   }
 }

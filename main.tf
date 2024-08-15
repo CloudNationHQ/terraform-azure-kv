@@ -4,10 +4,10 @@ data "azurerm_subscription" "current" {}
 # keyvault
 resource "azurerm_key_vault" "keyvault" {
   name                            = var.vault.name
-  resource_group_name             = coalesce(lookup(var.vault, "resourcegroup", null), var.resourcegroup)
+  resource_group_name             = coalesce(lookup(var.vault, "resource_group", null), var.resource_group)
   location                        = coalesce(lookup(var.vault, "location", null), var.location)
   tenant_id                       = data.azurerm_client_config.current.tenant_id
-  sku_name                        = try(var.vault.sku, "standard")
+  sku_name                        = try(var.vault.sku_name, "standard")
   tags                            = try(var.vault.tags, var.tags, null)
   enabled_for_deployment          = try(var.vault.enabled_for_deployment, true)
   enabled_for_disk_encryption     = try(var.vault.enabled_for_disk_encryption, true)

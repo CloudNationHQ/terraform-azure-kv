@@ -30,14 +30,14 @@ module "storage" {
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 0.1"
+  version = "~> 1.0"
 
   naming = local.naming
 
   vault = {
     name          = module.naming.key_vault.name_unique
     location      = module.rg.groups.demo.location
-    resourcegroup = module.rg.groups.demo.name
+    resource_group = module.rg.groups.demo.name
 
     secrets = {
       connection-string = {
