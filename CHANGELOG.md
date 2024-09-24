@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v1.1.0...v2.0.0) (2024-09-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* * Version 4 of the azurerm provider includes breaking changes.
+
+### Features
+
+* upgrade azurerm provder to v4 ([#64](https://github.com/CloudNationHQ/terraform-azure-kv/issues/64)) ([24bc2c1](https://github.com/CloudNationHQ/terraform-azure-kv/commit/24bc2c11f2e71c69f245be871b4071bab01d1dd3))
+
 ## [1.1.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v1.0.0...v1.1.0) (2024-09-24)
 
 
