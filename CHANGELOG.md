@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v1.0.0...v1.1.0) (2024-09-24)
+
+
+### Features
+
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#62](https://github.com/CloudNationHQ/terraform-azure-kv/issues/62)) ([7be2e25](https://github.com/CloudNationHQ/terraform-azure-kv/commit/7be2e25af763d32051232c5a867d63a39804f996))
+
 ## [1.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v0.14.0...v1.0.0) (2024-08-15)
 
 
