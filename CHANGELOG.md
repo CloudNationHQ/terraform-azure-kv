@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v2.2.0...v2.2.1) (2024-11-12)
+
+
+### Bug Fixes
+
+* increment private dns module usage ([#71](https://github.com/CloudNationHQ/terraform-azure-kv/issues/71)) ([a4a7211](https://github.com/CloudNationHQ/terraform-azure-kv/commit/a4a7211823956e6571ed0a9d21b96c78413fe369))
+
 ## [2.2.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v2.1.0...v2.2.0) (2024-11-11)
 
 
