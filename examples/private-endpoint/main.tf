@@ -53,17 +53,19 @@ module "kv" {
 
 module "private_dns" {
   source  = "cloudnationhq/pdns/azure"
-  version = "~> 1.0"
+  version = "~> 3.0"
 
   resource_group = module.rg.groups.demo.name
 
   zones = {
-    vault = {
-      name = "privatelink.vaultcore.azure.net"
-      virtual_network_links = {
-        link1 = {
-          virtual_network_id   = module.network.vnet.id
-          registration_enabled = true
+    private = {
+      vault = {
+        name = "privatelink.vaultcore.azure.net"
+        virtual_network_links = {
+          link1 = {
+            virtual_network_id   = module.network.vnet.id
+            registration_enabled = true
+          }
         }
       }
     }
@@ -82,7 +84,7 @@ module "privatelink" {
       name                           = module.naming.private_endpoint.name
       subnet_id                      = module.network.subnets.sn1.id
       private_connection_resource_id = module.kv.vault.id
-      private_dns_zone_ids           = [module.private_dns.zones.vault.id]
+      private_dns_zone_ids           = [module.private_dns.private_zones.vault.id]
       subresource_names              = ["vault"]
     }
   }
