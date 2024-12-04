@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v2.2.1...v3.0.0) (2024-12-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* keys of the secrets changed, which will cause a replacement.
+
+### Features
+
+* small refactor ([#73](https://github.com/CloudNationHQ/terraform-azure-kv/issues/73)) ([bc168d9](https://github.com/CloudNationHQ/terraform-azure-kv/commit/bc168d93f3971000874791abab59e43d3b1d331f))
+
 ## [2.2.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v2.2.0...v2.2.1) (2024-11-12)
 
 
