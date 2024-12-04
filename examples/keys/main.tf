@@ -18,8 +18,9 @@ module "rg" {
 }
 
 module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 2.0"
+  source = "../../"
+  #source  = "cloudnationhq/kv/azure"
+  #version = "~> 2.0"
 
   naming = local.naming
 
@@ -39,14 +40,11 @@ module "kv" {
           "verify", "wrapKey"
         ]
 
-        policy = {
-          rotation = {
-            expire_after         = "P90D"
-            notify_before_expiry = "P30D"
-            automatic = {
-              time_after_creation = "P83D"
-              time_before_expiry  = "P30D"
-            }
+        rotation_policy = {
+          expire_after         = "P90D"
+          notify_before_expiry = "P30D"
+          automatic = {
+            time_after_creation = "P83D"
           }
         }
       }
