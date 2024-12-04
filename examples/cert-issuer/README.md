@@ -1,22 +1,20 @@
-This example highlights how to integrate a certificate issuer.
+# Cert Issuer
 
-## Usage
+This deploys certificate issuers
+
+## Types
 
 ```hcl
-module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 0.13"
+vault = object({
+  name           = string
+  location       = string
+  resource_group = string
 
-  naming = local.naming
-
-  vault = {
-    name          = module.naming.key_vault.name_unique
-    location      = module.rg.groups.demo.location
-    resourcegroup = module.rg.groups.demo.name
-
-    issuers = {
-      DigiCert = { org_id = "12345", account_id = "12345", password = "12345" }
-    }
-  }
-}
+  issuers = optional(map(object({
+    provider_name = optional(string)
+    org_id        = optional(string)
+    account_id    = optional(string)
+    password      = optional(string)
+  })))
+})
 ```

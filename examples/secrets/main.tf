@@ -30,7 +30,7 @@ module "storage" {
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   naming = local.naming
 
@@ -47,6 +47,12 @@ module "kv" {
         example = {
           length  = 24
           special = false
+        }
+      }
+      tls_keys = {
+        example = {
+          algorithm = "RSA"
+          rsa_bits  = 2048
         }
       }
     }

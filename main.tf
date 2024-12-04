@@ -1,5 +1,4 @@
 data "azurerm_client_config" "current" {}
-data "azurerm_subscription" "current" {}
 
 # keyvault
 resource "azurerm_key_vault" "keyvault" {
@@ -48,16 +47,16 @@ resource "azurerm_role_assignment" "admins" {
 
 # certificate issuers
 resource "azurerm_key_vault_certificate_issuer" "issuer" {
-  for_each = {
-    for issuer in local.issuers : issuer.issuer_key => issuer
-  }
+  for_each = try(
+    var.vault.issuers, {}
+  )
 
-  name          = each.value.name
-  org_id        = each.value.org_id
-  key_vault_id  = each.value.key_vault_id
-  provider_name = each.value.provider_name
-  account_id    = each.value.account_id
-  password      = each.value.password #pat certificate authority
+  name          = try(each.value.name, each.key)
+  key_vault_id  = azurerm_key_vault.keyvault.id
+  provider_name = try(each.value.provider_name, each.key)
+  account_id    = try(each.value.account_id, null)
+  password      = try(each.value.password, null)
+  org_id        = try(each.value.org_id, null)
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -89,19 +88,19 @@ resource "azurerm_key_vault_certificate_contacts" "example" {
 
 # keys
 resource "azurerm_key_vault_key" "kv_keys" {
-  for_each = {
-    for key in local.keys : key.k_key => key
-  }
+  for_each = try(
+    var.vault.keys, {}
+  )
 
-  name            = each.value.name
-  key_vault_id    = each.value.key_vault_id
+  name            = try(each.value.name, join("-", [var.naming.key_vault_key, each.key]))
+  key_vault_id    = azurerm_key_vault.keyvault.id
   key_type        = each.value.key_type
-  key_size        = each.value.key_size
+  key_size        = try(each.value.key_size, null)
   key_opts        = each.value.key_opts
-  curve           = each.value.curve
-  not_before_date = each.value.not_before_date
-  expiration_date = each.value.expiration_date
-  tags            = each.value.tags
+  curve           = try(each.value.curve, null)
+  not_before_date = try(each.value.not_before_date, null)
+  expiration_date = try(each.value.expiration_date, null)
+  tags            = try(each.value.tags, var.tags, null)
 
   dynamic "rotation_policy" {
     for_each = try(each.value.rotation_policy, null) != null ? { "default" = each.value.rotation_policy } : {}
@@ -112,6 +111,7 @@ resource "azurerm_key_vault_key" "kv_keys" {
 
       dynamic "automatic" {
         for_each = try(rotation_policy.value.automatic, null) != null ? { "default" = rotation_policy.value.automatic } : {}
+
         content {
           time_after_creation = try(automatic.value.time_after_creation, null)
           time_before_expiry  = try(automatic.value.time_before_expiry, null)
@@ -125,46 +125,57 @@ resource "azurerm_key_vault_key" "kv_keys" {
   ]
 }
 
-# random passwords
+# Random password generator
 resource "random_password" "password" {
-  for_each = {
-    for secret in local.secrets_random : secret.secret_key => secret
-  }
+  for_each = try(
+    var.vault.secrets.random_string, {}
+  )
 
   length      = each.value.length
-  special     = each.value.special
-  min_lower   = each.value.min_lower
-  min_upper   = each.value.min_upper
-  min_special = each.value.min_special
-  min_numeric = each.value.min_numeric
+  special     = try(each.value.special, true)
+  min_lower   = try(each.value.min_lower, 5)
+  min_upper   = try(each.value.min_upper, 7)
+  min_special = try(each.value.min_special, 4)
+  min_numeric = try(each.value.min_numeric, 5)
 }
 
-resource "azurerm_key_vault_secret" "secret" {
-  for_each = {
-    for secret in local.secrets_random : secret.secret_key => secret
-  }
+# secrets
+resource "azurerm_key_vault_secret" "secrets" {
+  for_each = merge(
+    # random password secrets
+    {
+      for k, v in try(
+        var.vault.secrets.random_string, {}
+        ) : k => {
 
-  name            = each.value.name
-  value           = random_password.password[each.key].result
-  key_vault_id    = each.value.key_vault_id
-  tags            = each.value.tags
-  content_type    = each.value.content_type
-  expiration_date = each.value.expiration_date
-  not_before_date = each.value.not_before_date
+        name            = try(v.name, join("-", [var.naming.key_vault_secret, k]))
+        value           = random_password.password[k].result
+        tags            = try(v.tags, var.tags, null)
+        content_type    = try(v.content_type, null)
+        expiration_date = try(v.expiration_date, null)
+        not_before_date = try(v.not_before_date, null)
+      }
+    },
+    # defined secrets
+    {
+      for k, v in lookup(
+        var.vault, "secrets", {}
+        ) : k => {
 
-  depends_on = [
-    azurerm_role_assignment.admins
-  ]
-}
-
-resource "azurerm_key_vault_secret" "secret_defined" {
-  for_each = {
-    for secret in local.secrets : secret.secret_key => secret
-  }
+        name            = try(v.name, join("-", [var.naming.key_vault_secret, k]))
+        value           = v.value
+        tags            = try(v.tags, var.tags, null)
+        content_type    = try(v.content_type, null)
+        expiration_date = try(v.expiration_date, null)
+        not_before_date = try(v.not_before_date, null)
+      }
+      if k != "random_string" && k != "tls_keys"
+    }
+  )
 
   name            = each.value.name
   value           = each.value.value
-  key_vault_id    = each.value.key_vault_id
+  key_vault_id    = azurerm_key_vault.keyvault.id
   tags            = each.value.tags
   content_type    = each.value.content_type
   expiration_date = each.value.expiration_date
@@ -177,39 +188,50 @@ resource "azurerm_key_vault_secret" "secret_defined" {
 
 # tls keys
 resource "tls_private_key" "tls_key" {
-  for_each = {
-    for key in local.tls : key.tls_key => key
-  }
+  for_each = try(
+    var.vault.secrets.tls_keys, {}
+  )
 
   algorithm = each.value.algorithm
-  rsa_bits  = each.value.rsa_bits
+  rsa_bits  = try(each.value.rsa_bits, 2048)
 }
 
-resource "azurerm_key_vault_secret" "tls_public_key_secret" {
-  for_each = {
-    for item in local.tls : item.tls_key => item
-  }
+resource "azurerm_key_vault_secret" "tls_secrets" {
+  for_each = merge(
+    # public keys
+    {
+      for k, v in try(
+        var.vault.secrets.tls_keys, {}
+        ) : "${k}-pub" => {
 
-  name            = "${each.value.name}-pub"
-  value           = tls_private_key.tls_key[each.key].public_key_openssh
-  key_vault_id    = each.value.key_vault_id
-  tags            = each.value.tags
-  not_before_date = each.value.not_before_date
-  expiration_date = each.value.expiration_date
-  content_type    = each.value.content_type
+        name            = "${try(v.name, join("-", [var.naming.key_vault_secret, k]))}-pub"
+        value           = tls_private_key.tls_key[k].public_key_openssh
+        key_vault_id    = azurerm_key_vault.keyvault.id
+        tags            = try(v.tags, var.tags, null)
+        content_type    = try(v.content_type, null)
+        expiration_date = try(v.expiration_date, null)
+        not_before_date = try(v.not_before_date, null)
+      }
+    },
+    # private keys
+    {
+      for k, v in try(
+        var.vault.secrets.tls_keys, {}
+        ) : "${k}-priv" => {
 
-  depends_on = [
-    azurerm_role_assignment.admins
-  ]
-}
+        name            = "${try(v.name, join("-", [var.naming.key_vault_secret, k]))}-priv"
+        value           = tls_private_key.tls_key[k].private_key_pem
+        key_vault_id    = azurerm_key_vault.keyvault.id
+        tags            = try(v.tags, var.tags, null)
+        content_type    = try(v.content_type, null)
+        expiration_date = try(v.expiration_date, null)
+        not_before_date = try(v.not_before_date, null)
+      }
+    }
+  )
 
-resource "azurerm_key_vault_secret" "tls_private_key_secret" {
-  for_each = {
-    for item in local.tls : item.tls_key => item
-  }
-
-  name            = "${each.value.name}-priv"
-  value           = tls_private_key.tls_key[each.key].private_key_pem
+  name            = each.value.name
+  value           = each.value.value
   key_vault_id    = each.value.key_vault_id
   tags            = each.value.tags
   content_type    = each.value.content_type
@@ -223,31 +245,78 @@ resource "azurerm_key_vault_secret" "tls_private_key_secret" {
 
 # certificates
 resource "azurerm_key_vault_certificate" "cert" {
-  for_each = {
-    for cert in local.certs : cert.cert_key => cert
+  for_each = try(
+    var.vault.certs, {}
+  )
+
+  name         = try(each.value.name, join("-", [var.naming.key_vault_certificate, each.key]))
+  key_vault_id = azurerm_key_vault.keyvault.id
+  tags         = try(each.value.tags, var.tags, null)
+
+  dynamic "certificate" {
+    for_each = try(each.value.certificate, null) != null ? [each.value.certificate] : []
+
+    content {
+      contents = certificate.value.contents
+      password = try(certificate.value.password, null)
+    }
   }
 
-  name         = each.value.name
-  key_vault_id = each.value.key_vault_id
-  tags         = each.value.tags
+  dynamic "certificate_policy" {
+    for_each = try(each.value.certificate, null) == null ? [each.value] : []
 
-  certificate_policy {
-    issuer_parameters {
-      name = each.value.issuer
-    }
-    key_properties {
-      exportable = each.value.issuer == "Self" ? true : false
-      key_type   = each.value.key_type
-      key_size   = each.value.key_size
-      reuse_key  = each.value.reuse_key
-    }
-    secret_properties {
-      content_type = each.value.content_type
-    }
-    x509_certificate_properties {
-      subject            = each.value.subject
-      validity_in_months = each.value.validity_in_months
-      key_usage          = each.value.key_usage
+    content {
+      issuer_parameters {
+        name = try(
+          certificate_policy.value.issuer, "Self"
+        )
+      }
+
+      key_properties {
+        exportable = certificate_policy.value.issuer == "Self" ? true : false
+        key_type   = try(certificate_policy.value.key_type, "RSA")
+        key_size   = try(certificate_policy.value.key_size, "2048")
+        reuse_key  = try(certificate_policy.value.reuse_key, false)
+        curve      = try(certificate_policy.value.curve, null)
+      }
+
+      secret_properties {
+        content_type = try(certificate_policy.value.content_type, "application/x-pkcs12")
+      }
+
+      x509_certificate_properties {
+        subject            = certificate_policy.value.subject
+        validity_in_months = certificate_policy.value.validity_in_months
+        key_usage          = certificate_policy.value.key_usage
+        extended_key_usage = try(certificate_policy.value.extended_key_usage, [])
+
+        dynamic "subject_alternative_names" {
+          for_each = try(certificate_policy.value.subject_alternative_names, null) != null ? [certificate_policy.value.subject_alternative_names] : []
+
+          content {
+            dns_names = try(subject_alternative_names.value.dns_names, [])
+            upns      = try(subject_alternative_names.value.upns, [])
+            emails    = try(subject_alternative_names.value.emails, [])
+          }
+        }
+      }
+
+      dynamic "lifetime_action" {
+        for_each = try(
+          certificate_policy.value.lifetime_actions, {}
+        )
+
+        content {
+          action {
+            action_type = lifetime_action.value.action_type
+          }
+
+          trigger {
+            days_before_expiry  = try(lifetime_action.value.days_before_expiry, null)
+            lifetime_percentage = try(lifetime_action.value.lifetime_percentage, null)
+          }
+        }
+      }
     }
   }
   depends_on = [

@@ -1,21 +1,18 @@
-This example shows how to use network ACLs to enhance security with secure access control.
+# Network ACL's
 
-## Usage:
+This deploys network ACL's
+
+## Types
 
 ```hcl
-module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 0.13"
+vault = object({
+  name           = string
+  location       = string
+  resource_group = string
 
-  vault = {
-    name          = module.naming.key_vault.name_unique
-    location      = module.rg.groups.demo.location
-    resourcegroup = module.rg.groups.demo.name
-    public_access = false
-
-    network_acl = {
-      virtual_network_subnet_ids = [module.network.subnets.sn1.id]
-    }
-  }
-}
+  public_network_access_enabled = optional(bool)
+  network_acl = optional(object({
+    virtual_network_subnet_ids = optional(list(string))
+  }))
+})
 ```
