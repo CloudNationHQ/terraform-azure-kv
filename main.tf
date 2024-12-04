@@ -51,9 +51,9 @@ resource "azurerm_key_vault_certificate_issuer" "issuer" {
     var.vault.issuers, {}
   )
 
-  name          = "issuer-${each.key}"
+  name          = try(each.value.name, each.key)
   key_vault_id  = azurerm_key_vault.keyvault.id
-  provider_name = each.key
+  provider_name = try(each.value.provider_name, each.key)
   account_id    = try(each.value.account_id, null)
   password      = try(each.value.password, null)
   org_id        = try(each.value.org_id, null)

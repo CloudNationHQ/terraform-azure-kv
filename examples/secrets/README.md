@@ -1,30 +1,31 @@
-This example highlights the streamlined creation and secure management of secrets. This can be either random generated secret strings (which fall under random_string key) or non-random secrets with the value passed on from another module or resource, e.g. a connection string of a storage account. 
+# Secrets
 
-## Usage
+This deploys vault secrets
+
+## Types
 
 ```hcl
-module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 0.13"
+vault = object({
+  name           = string
+  location       = string
+  resource_group = string
 
-  naming = local.naming
-
-  vault = {
-    name          = module.naming.key_vault.name_unique
-    location      = module.rg.groups.demo.location
-    resourcegroup = module.rg.groups.demo.name
-
-    secrets = {
-      connection-string = {
-        value = module.storage.account.primary_connection_string
-      }
-      random_string = {
-        secret1 = {
-          length  = 24
-          special = false
-        }
-      }
-    }
-  }
-}
+  secrets = optional(object({
+    connection-string = optional(object({
+      value = string
+    }))
+    random_string = optional(map(object({
+      length  = number
+      special = optional(bool)
+    })))
+    tls_keys = optional(map(object({
+      algorithm = string
+      rsa_bits  = optional(number)
+    })))
+  }))
+})
 ```
+
+## Notes
+
+The vault supports defined secrets (like a primary storage key, as input from another module), random string secrets (generated strings), and TLS key pairs (generated public/private keys).

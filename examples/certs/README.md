@@ -1,34 +1,40 @@
-This example outlines the approach for managing certificates to enhance security and automate the management of certificate lifecycles.
+# Certs
 
-## Usage:
+This deploys certificates
+
+## Types
 
 ```hcl
-module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 0.13"
+vault = object({
+  name           = string
+  location       = string
+  resource_group = string
 
-  naming = local.naming
+  certs = optional(map(object({
+    issuer             = optional(string)
+    subject            = string
+    validity_in_months = number
+    key_type          = optional(string)
+    key_size          = optional(string)
+    reuse_key         = optional(bool)
+    content_type      = optional(string)
+    key_usage         = list(string)
+    extended_key_usage = optional(list(string))
 
-  vault = {
-    demo = {
-      name          = module.naming.key_vault.name_unique
-      location      = module.rg.groups.demo.location
-      resourcegroup = module.rg.groups.demo.name
+    lifetime_actions = optional(map(object({
+      action_type        = string
+      days_before_expiry = optional(number)
+    })))
 
-      certs = {
-        example = {
-          issuer             = "Self"
-          subject            = "CN=app1.demo.org"
-          validity_in_months = 12
-          exportable         = true
-          key_usage = [
-            "cRLSign", "dataEncipherment",
-            "digitalSignature", "keyAgreement",
-            "keyCertSign", "keyEncipherment"
-          ]
-        }
-      }
-    }
-  }
-}
+    subject_alternative_names = optional(object({
+      dns_names = optional(list(string))
+      emails    = optional(list(string))
+      upns      = optional(list(string))
+    }))
+  })))
+})
 ```
+
+## Notes
+
+Certificates can be self-signed, imported as PFX files, or issued by external certificate authorities like DigiCert and GlobalSign

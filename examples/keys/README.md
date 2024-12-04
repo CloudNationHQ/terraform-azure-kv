@@ -1,42 +1,26 @@
-This example shows how to simplify key lifecycle management and enhance security with automated rotation policies.
+# Keys
 
-## Usage:
+This deploys keys and rotation policies
+
+## Types
 
 ```hcl
-module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 0.13"
+vault = object({
+  name           = string
+  location       = string
+  resource_group = string
 
-  naming = local.naming
-
-  vault = {
-    name          = module.naming.key_vault.name_unique
-    location      = module.rg.groups.demo.location
-    resourcegroup = module.rg.groups.demo.name
-
-    keys = {
-      demo = {
-        key_type = "RSA"
-        key_size = 2048
-
-        key_opts = [
-          "decrypt", "encrypt",
-          "sign", "unwrapKey",
-          "verify", "wrapKey"
-        ]
-
-        policy = {
-          rotation = {
-            expire_after         = "P90D"
-            notify_before_expiry = "P30D"
-            automatic = {
-              time_after_creation = "P83D"
-              time_before_expiry  = "P30D"
-            }
-          }
-        }
-      }
-    }
-  }
-}
+  keys = optional(map(object({
+    key_type = string
+    key_size = optional(number)
+    key_opts = list(string)
+    rotation_policy = optional(object({
+      expire_after         = optional(string)
+      notify_before_expiry = optional(string)
+      automatic = optional(object({
+        time_after_creation = optional(string)
+      }))
+    }))
+  })))
+})
 ```
