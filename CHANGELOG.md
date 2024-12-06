@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v3.0.0...v3.0.1) (2024-12-06)
+
+
+### Bug Fixes
+
+* fix typos usages ([#75](https://github.com/CloudNationHQ/terraform-azure-kv/issues/75)) ([978a73b](https://github.com/CloudNationHQ/terraform-azure-kv/commit/978a73b6fd6d6b0185187bc916492e1cb779d6f2))
+
 ## [3.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v2.2.1...v3.0.0) (2024-12-04)
 
 
