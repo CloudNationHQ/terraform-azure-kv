@@ -1,19 +1,17 @@
 # Private Endpoint
 
-This deploys private endpoint
+This deploys private endpoints
 
 ## Types
 
 ```hcl
-vault = object({
-  name           = string
-  location       = string
-  resource_group = string
-
-  public_network_access_enabled = optional(bool)
-})
+resource_group = string
+location       = string
+endpoints = map(object({
+  name                           = string
+  subnet_id                      = string
+  private_connection_resource_id = string
+  private_dns_zone_ids          = list(string)
+  subresource_names             = list(string)
+}))
 ```
-
-# Notes
-
-Private DNS zones and private endpoints are managed through separate modules when private networking is required
