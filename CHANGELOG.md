@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.1.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v3.0.1...v3.1.0) (2025-01-20)
+
+
+### Features
+
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#78](https://github.com/CloudNationHQ/terraform-azure-kv/issues/78)) ([e0140c7](https://github.com/CloudNationHQ/terraform-azure-kv/commit/e0140c7cb8223f254fa04faff7e33224d4dc77f6))
+* **deps:** bump golang.org/x/crypto from 0.29.0 to 0.31.0 in /tests ([#80](https://github.com/CloudNationHQ/terraform-azure-kv/issues/80)) ([2f39fd8](https://github.com/CloudNationHQ/terraform-azure-kv/commit/2f39fd811eb7438e28e4497947cd49cb1fe55246))
+* **deps:** bump golang.org/x/net from 0.31.0 to 0.33.0 in /tests ([#81](https://github.com/CloudNationHQ/terraform-azure-kv/issues/81)) ([4b72458](https://github.com/CloudNationHQ/terraform-azure-kv/commit/4b724587d389cbe8e4621c19cae2795974f627db))
+
 ## [3.0.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v3.0.0...v3.0.1) (2024-12-06)
 
 
