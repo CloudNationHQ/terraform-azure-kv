@@ -14,7 +14,7 @@ resource "azurerm_key_vault" "keyvault" {
   purge_protection_enabled        = try(var.vault.purge_protection_enabled, true)
   enable_rbac_authorization       = try(var.vault.enable_rbac_authorization, true)
   public_network_access_enabled   = try(var.vault.public_network_access_enabled, true)
-  soft_delete_retention_days      = try(var.vault.soft_delete_retention_in_days, null)
+  soft_delete_retention_days      = try(var.vault.soft_delete_retention_days, null)
 
   dynamic "network_acls" {
     for_each = try(var.vault.network_acl, null) != null ? { "default" = var.vault.network_acl } : {}
