@@ -40,9 +40,13 @@ resource "azurerm_role_assignment" "admins" {
     length(lookup(var.vault, "admins", [])) > 0 ? lookup(var.vault, "admins", []) : [data.azurerm_client_config.current.object_id]
   )
 
-  scope                = azurerm_key_vault.keyvault.id
-  role_definition_name = "Key Vault Administrator"
-  principal_id         = each.value
+  scope                                  = azurerm_key_vault.keyvault.id
+  role_definition_name                   = "Key Vault Administrator"
+  principal_id                           = each.value
+  delegated_managed_identity_resource_id = try(var.vault.delegated_managed_identity_resource_id, null)
+  condition                              = try(var.vault.condition, null)
+  condition_version                      = try(var.vault.condition_version, null)
+  description                            = "Key Vault Administrator role assignment"
 }
 
 # certificate issuers
@@ -57,6 +61,17 @@ resource "azurerm_key_vault_certificate_issuer" "issuer" {
   account_id    = try(each.value.account_id, null)
   password      = try(each.value.password, null)
   org_id        = try(each.value.org_id, null)
+
+  dynamic "admin" {
+    for_each = try(each.value.admin, null) != null ? [each.value.admin] : []
+
+    content {
+      email_address = try(admin.value.email_address, null)
+      first_name    = try(admin.value.first_name, null)
+      last_name     = try(admin.value.last_name, null)
+      phone         = try(admin.value.phone, null)
+    }
+  }
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -131,12 +146,14 @@ resource "random_password" "password" {
     var.vault.secrets.random_string, {}
   )
 
-  length      = each.value.length
-  special     = try(each.value.special, true)
-  min_lower   = try(each.value.min_lower, 5)
-  min_upper   = try(each.value.min_upper, 7)
-  min_special = try(each.value.min_special, 4)
-  min_numeric = try(each.value.min_numeric, 5)
+  length           = each.value.length
+  special          = try(each.value.special, true)
+  min_lower        = try(each.value.min_lower, 5)
+  min_upper        = try(each.value.min_upper, 7)
+  min_special      = try(each.value.min_special, 4)
+  min_numeric      = try(each.value.min_numeric, 5)
+  keepers          = try(each.value.keepers, {})
+  override_special = try(each.value.override_special, null)
 }
 
 # secrets
