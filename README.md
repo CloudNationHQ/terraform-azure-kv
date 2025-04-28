@@ -281,7 +281,7 @@ To update the module's documentation run `make doc`
 
 Module is maintained by [these awesome contributors](https://github.com/cloudnationhq/terraform-azure-kv/graphs/contributors).
 
-## Contributing
+## Contributors
 
 We welcome contributions from the community! Whether it's reporting a bug, suggesting a new feature, or submitting a pull request, your input is highly valued.
 
