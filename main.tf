@@ -3,41 +3,35 @@ data "azurerm_client_config" "current" {}
 # keyvault
 resource "azurerm_key_vault" "keyvault" {
   name                            = var.vault.name
-  resource_group_name             = coalesce(lookup(var.vault, "resource_group", null), var.resource_group)
+  resource_group_name             = coalesce(lookup(var.vault, "resource_group_name", null), var.resource_group_name)
   location                        = coalesce(lookup(var.vault, "location", null), var.location)
-  tenant_id                       = data.azurerm_client_config.current.tenant_id
-  sku_name                        = try(var.vault.sku_name, "standard")
-  tags                            = try(var.vault.tags, var.tags, null)
-  enabled_for_deployment          = try(var.vault.enabled_for_deployment, true)
-  enabled_for_disk_encryption     = try(var.vault.enabled_for_disk_encryption, true)
-  enabled_for_template_deployment = try(var.vault.enabled_for_template_deployment, true)
-  purge_protection_enabled        = try(var.vault.purge_protection_enabled, true)
-  enable_rbac_authorization       = try(var.vault.enable_rbac_authorization, true)
-  public_network_access_enabled   = try(var.vault.public_network_access_enabled, true)
-  soft_delete_retention_days      = try(var.vault.soft_delete_retention_in_days, null)
+  tenant_id                       = try(var.vault.tenant_id, null) != null ? var.vault.tenant_id : data.azurerm_client_config.current.tenant_id
+  sku_name                        = var.vault.sku_name
+  tags                            = coalesce(var.vault.tags, var.tags)
+  enabled_for_deployment          = var.vault.enabled_for_deployment
+  enabled_for_disk_encryption     = var.vault.enabled_for_disk_encryption
+  enabled_for_template_deployment = var.vault.enabled_for_template_deployment
+  purge_protection_enabled        = var.vault.purge_protection_enabled
+  enable_rbac_authorization       = var.vault.enable_rbac_authorization
+  public_network_access_enabled   = var.vault.public_network_access_enabled
+  soft_delete_retention_days      = var.vault.soft_delete_retention_days
 
   dynamic "network_acls" {
-    for_each = try(var.vault.network_acl, null) != null ? { "default" = var.vault.network_acl } : {}
+    for_each = try(var.vault.network_acls, null) != null ? { "default" = var.vault.network_acls } : {}
 
     content {
-      bypass                     = try(network_acls.value.bypass, "AzureServices")
-      default_action             = try(network_acls.value.default_action, "Deny")
-      ip_rules                   = try(network_acls.value.ip_rules, null)
-      virtual_network_subnet_ids = try(network_acls.value.virtual_network_subnet_ids, null)
+      bypass                     = network_acls.value.bypass
+      default_action             = network_acls.value.default_action
+      ip_rules                   = network_acls.value.ip_rules
+      virtual_network_subnet_ids = network_acls.value.virtual_network_subnet_ids
     }
-  }
-
-  lifecycle {
-    ignore_changes = [
-      contact,
-    ]
   }
 }
 
 # role assignments
 resource "azurerm_role_assignment" "admins" {
   for_each = toset(
-    length(lookup(var.vault, "admins", [])) > 0 ? lookup(var.vault, "admins", []) : [data.azurerm_client_config.current.object_id]
+    (lookup(var.vault, "admins", null)) != null ? lookup(var.vault, "admins", []) : [data.azurerm_client_config.current.object_id]
   )
 
   scope                = azurerm_key_vault.keyvault.id
@@ -51,12 +45,12 @@ resource "azurerm_key_vault_certificate_issuer" "issuer" {
     var.vault.issuers, {}
   )
 
-  name          = try(each.value.name, each.key)
+  name          = coalesce(each.value.name, each.key)
   key_vault_id  = azurerm_key_vault.keyvault.id
-  provider_name = try(each.value.provider_name, each.key)
-  account_id    = try(each.value.account_id, null)
-  password      = try(each.value.password, null)
-  org_id        = try(each.value.org_id, null)
+  provider_name = coalesce(each.value.provider_name, each.key)
+  account_id    = each.value.account_id
+  password      = each.value.password
+  org_id        = each.value.org_id
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -64,8 +58,8 @@ resource "azurerm_key_vault_certificate_issuer" "issuer" {
 }
 
 # certificate contacts
-resource "azurerm_key_vault_certificate_contacts" "example" {
-  for_each = try(var.vault.contacts, {}) != {} ? { "default" : {} } : {}
+resource "azurerm_key_vault_certificate_contacts" "contact" {
+  for_each = try(var.vault.contacts, null) != null ? { "default" : {} } : {}
 
   key_vault_id = azurerm_key_vault.keyvault.id
 
@@ -76,8 +70,8 @@ resource "azurerm_key_vault_certificate_contacts" "example" {
 
     content {
       email = contact.value.email
-      name  = try(contact.value.name, null)
-      phone = try(contact.value.phone, null)
+      name  = contact.value.name
+      phone = contact.value.phone
     }
   }
 
@@ -92,29 +86,29 @@ resource "azurerm_key_vault_key" "kv_keys" {
     var.vault.keys, {}
   )
 
-  name            = try(each.value.name, join("-", [var.naming.key_vault_key, each.key]))
+  name            = coalesce(each.value.name, try("${var.naming.key_vault_key}-${each.key}", each.key))
   key_vault_id    = azurerm_key_vault.keyvault.id
   key_type        = each.value.key_type
-  key_size        = try(each.value.key_size, null)
+  key_size        = each.value.key_size
   key_opts        = each.value.key_opts
-  curve           = try(each.value.curve, null)
-  not_before_date = try(each.value.not_before_date, null)
-  expiration_date = try(each.value.expiration_date, null)
-  tags            = try(each.value.tags, var.tags, null)
+  curve           = each.value.curve
+  not_before_date = each.value.not_before_date
+  expiration_date = each.value.expiration_date
+  tags            = coalesce(each.value.tags, var.tags)
 
   dynamic "rotation_policy" {
     for_each = try(each.value.rotation_policy, null) != null ? { "default" = each.value.rotation_policy } : {}
 
     content {
-      expire_after         = try(rotation_policy.value.expire_after, null)
-      notify_before_expiry = try(rotation_policy.value.notify_before_expiry, null)
+      expire_after         = rotation_policy.value.expire_after
+      notify_before_expiry = rotation_policy.value.notify_before_expiry
 
       dynamic "automatic" {
         for_each = try(rotation_policy.value.automatic, null) != null ? { "default" = rotation_policy.value.automatic } : {}
 
         content {
-          time_after_creation = try(automatic.value.time_after_creation, null)
-          time_before_expiry  = try(automatic.value.time_before_expiry, null)
+          time_after_creation = automatic.value.time_after_creation
+          time_before_expiry  = automatic.value.time_before_expiry
         }
       }
     }
@@ -132,11 +126,11 @@ resource "random_password" "password" {
   )
 
   length      = each.value.length
-  special     = try(each.value.special, true)
-  min_lower   = try(each.value.min_lower, 5)
-  min_upper   = try(each.value.min_upper, 7)
-  min_special = try(each.value.min_special, 4)
-  min_numeric = try(each.value.min_numeric, 5)
+  special     = each.value.special
+  min_lower   = each.value.min_lower
+  min_upper   = each.value.min_upper
+  min_special = each.value.min_special
+  min_numeric = each.value.min_numeric
 }
 
 # secrets
@@ -144,32 +138,35 @@ resource "azurerm_key_vault_secret" "secrets" {
   for_each = merge(
     # random password secrets
     {
-      for k, v in try(
-        var.vault.secrets.random_string, {}
-        ) : k => {
+      for k, v in var.vault.secrets.random_string : k => {
 
-        name            = try(v.name, join("-", [var.naming.key_vault_secret, k]))
+        name = coalesce(
+          v.name,
+          try("${var.naming.key_vault_secret}-${replace(k, "_", "-")}",
+          replace(k, "_", "-"))
+        )
         value           = random_password.password[k].result
-        tags            = try(v.tags, var.tags, null)
-        content_type    = try(v.content_type, null)
-        expiration_date = try(v.expiration_date, null)
-        not_before_date = try(v.not_before_date, null)
+        tags            = coalesce(v.tags, var.tags)
+        content_type    = v.content_type
+        expiration_date = v.expiration_date
+        not_before_date = v.not_before_date
       }
     },
     # defined secrets
     {
-      for k, v in lookup(
-        var.vault, "secrets", {}
-        ) : k => {
+      for k, v in var.vault.secrets.predefined_string : k => {
 
-        name            = try(v.name, join("-", [var.naming.key_vault_secret, k]))
+        name = coalesce(
+          v.name,
+          try("${var.naming.key_vault_secret}-${replace(k, "_", "-")}",
+          replace(k, "_", "-"))
+        )
         value           = v.value
-        tags            = try(v.tags, var.tags, null)
-        content_type    = try(v.content_type, null)
-        expiration_date = try(v.expiration_date, null)
-        not_before_date = try(v.not_before_date, null)
+        tags            = coalesce(v.tags, var.tags)
+        content_type    = v.content_type
+        expiration_date = v.expiration_date
+        not_before_date = v.not_before_date
       }
-      if k != "random_string" && k != "tls_keys"
     }
   )
 
@@ -193,7 +190,7 @@ resource "tls_private_key" "tls_key" {
   )
 
   algorithm = each.value.algorithm
-  rsa_bits  = try(each.value.rsa_bits, 2048)
+  rsa_bits  = each.value.rsa_bits
 }
 
 resource "azurerm_key_vault_secret" "tls_secrets" {
@@ -204,13 +201,13 @@ resource "azurerm_key_vault_secret" "tls_secrets" {
         var.vault.secrets.tls_keys, {}
         ) : "${k}-pub" => {
 
-        name            = "${try(v.name, join("-", [var.naming.key_vault_secret, k]))}-pub"
+        name            = "${coalesce(v.name, "${var.naming.key_vault_secret}-${k}", k)}-pub"
         value           = tls_private_key.tls_key[k].public_key_openssh
         key_vault_id    = azurerm_key_vault.keyvault.id
-        tags            = try(v.tags, var.tags, null)
-        content_type    = try(v.content_type, null)
-        expiration_date = try(v.expiration_date, null)
-        not_before_date = try(v.not_before_date, null)
+        tags            = coalesce(v.tags, var.tags)
+        content_type    = v.content_type
+        expiration_date = v.expiration_date
+        not_before_date = v.not_before_date
       }
     },
     # private keys
@@ -219,13 +216,13 @@ resource "azurerm_key_vault_secret" "tls_secrets" {
         var.vault.secrets.tls_keys, {}
         ) : "${k}-priv" => {
 
-        name            = "${try(v.name, join("-", [var.naming.key_vault_secret, k]))}-priv"
+        name            = "${coalesce(v.name, "${var.naming.key_vault_secret}-${k}", k)}-priv"
         value           = tls_private_key.tls_key[k].private_key_pem
         key_vault_id    = azurerm_key_vault.keyvault.id
-        tags            = try(v.tags, var.tags, null)
-        content_type    = try(v.content_type, null)
-        expiration_date = try(v.expiration_date, null)
-        not_before_date = try(v.not_before_date, null)
+        tags            = coalesce(v.tags, var.tags)
+        content_type    = v.content_type
+        expiration_date = v.expiration_date
+        not_before_date = v.not_before_date
       }
     }
   )
@@ -249,16 +246,16 @@ resource "azurerm_key_vault_certificate" "cert" {
     var.vault.certs, {}
   )
 
-  name         = try(each.value.name, join("-", [var.naming.key_vault_certificate, each.key]))
+  name         = coalesce(each.value.name, "${var.naming.key_vault_certificate}-${each.key}")
   key_vault_id = azurerm_key_vault.keyvault.id
-  tags         = try(each.value.tags, var.tags, null)
+  tags         = coalesce(each.value.tags, var.tags)
 
   dynamic "certificate" {
     for_each = try(each.value.certificate, null) != null ? [each.value.certificate] : []
 
     content {
       contents = certificate.value.contents
-      password = try(certificate.value.password, null)
+      password = certificate.value.password
     }
   }
 
@@ -267,21 +264,19 @@ resource "azurerm_key_vault_certificate" "cert" {
 
     content {
       issuer_parameters {
-        name = try(
-          certificate_policy.value.issuer, "Self"
-        )
+        name = certificate_policy.value.issuer
       }
 
       key_properties {
         exportable = certificate_policy.value.issuer == "Self" ? true : false
-        key_type   = try(certificate_policy.value.key_type, "RSA")
-        key_size   = try(certificate_policy.value.key_size, "2048")
-        reuse_key  = try(certificate_policy.value.reuse_key, false)
-        curve      = try(certificate_policy.value.curve, null)
+        key_type   = certificate_policy.value.key_type
+        key_size   = certificate_policy.value.key_size
+        reuse_key  = certificate_policy.value.reuse_key
+        curve      = certificate_policy.value.curve
       }
 
       secret_properties {
-        content_type = try(certificate_policy.value.content_type, "application/x-pkcs12")
+        content_type = certificate_policy.value.content_type
       }
 
       x509_certificate_properties {
@@ -294,9 +289,9 @@ resource "azurerm_key_vault_certificate" "cert" {
           for_each = try(certificate_policy.value.subject_alternative_names, null) != null ? [certificate_policy.value.subject_alternative_names] : []
 
           content {
-            dns_names = try(subject_alternative_names.value.dns_names, [])
-            upns      = try(subject_alternative_names.value.upns, [])
-            emails    = try(subject_alternative_names.value.emails, [])
+            dns_names = subject_alternative_names.value.dns_names
+            upns      = subject_alternative_names.value.upns
+            emails    = subject_alternative_names.value.emails
           }
         }
       }
@@ -312,8 +307,8 @@ resource "azurerm_key_vault_certificate" "cert" {
           }
 
           trigger {
-            days_before_expiry  = try(lifetime_action.value.days_before_expiry, null)
-            lifetime_percentage = try(lifetime_action.value.lifetime_percentage, null)
+            days_before_expiry  = lifetime_action.value.days_before_expiry
+            lifetime_percentage = lifetime_action.value.lifetime_percentage
           }
         }
       }
@@ -321,5 +316,44 @@ resource "azurerm_key_vault_certificate" "cert" {
   }
   depends_on = [
     azurerm_role_assignment.admins
+  ]
+}
+
+resource "azurerm_key_vault_access_policy" "policy" {
+  for_each = { for key, policy in try(
+    var.vault.access_policies, {}
+  ) : key => policy if var.vault.enable_rbac_authorization == false }
+
+  key_vault_id   = azurerm_key_vault.keyvault.id
+  tenant_id      = try(each.value.tenant_id, null) != null ? each.value.tenant_id : data.azurerm_client_config.current.tenant_id
+  object_id      = try(each.value.object_id, null) != null ? each.value.object_id : data.azurerm_client_config.current.object_id
+  application_id = each.value.application_id
+
+
+  secret_permissions      = try(each.value.secret_permissions[0], []) == "all" ? local.all_secret_permissions : each.value.secret_permissions
+  key_permissions         = try(each.value.key_permissions[0], []) == "all" ? local.all_key_permissions : each.value.key_permissions
+  certificate_permissions = try(each.value.certificate_permissions[0], []) == "all" ? local.all_certificate_permissions : each.value.certificate_permissions
+  storage_permissions     = try(each.value.storage_permissions[0], []) == "all" ? local.all_storage_permissions : each.value.storage_permissions
+}
+
+locals {
+  all_key_permissions = [
+    "Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get",
+    "Import", "List", "Purge", "Recover", "Restore", "Sign",
+    "UnwrapKey", "Update", "Verify", "WrapKey", "Release",
+    "Rotate", "GetRotationPolicy", "SetRotationPolicy"
+  ]
+  all_secret_permissions = [
+    "Backup", "Delete", "Get", "List",
+    "Purge", "Recover", "Restore", "Set"
+  ]
+  all_certificate_permissions = [
+    "Backup", "Create", "Delete", "DeleteIssuers", "Get", "GetIssuers",
+    "Import", "List", "ListIssuers", "ManageContacts", "ManageIssuers",
+    "Purge", "Recover", "Restore", "SetIssuers", "Update"
+  ]
+  all_storage_permissions = [
+    "Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS",
+    "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update"
   ]
 }

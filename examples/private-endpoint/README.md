@@ -1,6 +1,6 @@
 # Private Endpoint
 
-This deploys private endpoint for keyvault
+This deploys  private endpoint for keyvault
 
 ## Types
 
