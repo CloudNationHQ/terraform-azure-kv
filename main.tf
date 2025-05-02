@@ -33,7 +33,7 @@ resource "azurerm_role_assignment" "admins" {
   for_each = (
     var.vault.enable_role_assignment == true ? var.vault.admins != null ?
     { for admin in var.vault.admins : admin => admin } :
-    { "${data.azurerm_client_config.current.object_id}" = data.azurerm_client_config.current.object_id } :
+    { (data.azurerm_client_config.current.object_id) = data.azurerm_client_config.current.object_id } :
     {}
   )
 
