@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v3.2.0...v4.0.0) (2025-05-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* add type definitions, updated properties ([#103](https://github.com/CloudNationHQ/terraform-azure-kv/issues/103))
+
+### Features
+
+* add type definitions, updated properties ([#103](https://github.com/CloudNationHQ/terraform-azure-kv/issues/103)) ([156bb73](https://github.com/CloudNationHQ/terraform-azure-kv/commit/156bb73a5f865eb67b42169cba61840e7ef098f3))
+
 ## [3.2.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v3.1.0...v3.2.0) (2025-04-28)
 
 
