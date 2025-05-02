@@ -1,18 +1,7 @@
 # Network ACL's
 
-This deploys network ACL's
+This example sets network ACL's (firewall) to `Deny` (default) while still allowing a specific subnet.
 
-## Types
-
-```hcl
-vault = object({
-  name           = string
-  location       = string
-  resource_group = string
-
-  public_network_access_enabled = optional(bool)
-  network_acl = optional(object({
-    virtual_network_subnet_ids = optional(list(string))
-  }))
-})
-```
+## Note
+In addition, public IP's with `ip_rules` can be whitelisted and / or set to `Allow Azure Services` with the `bypass` property.
+The `public_network_access_enabled` must be used together, to ensure no public connectivity to the key vault can take place. 

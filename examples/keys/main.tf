@@ -19,14 +19,14 @@ module "rg" {
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   naming = local.naming
 
   vault = {
-    name           = module.naming.key_vault.name_unique
-    location       = module.rg.groups.demo.location
-    resource_group = module.rg.groups.demo.name
+    name                = module.naming.key_vault.name_unique
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
 
     keys = {
       example = {
@@ -46,6 +46,16 @@ module "kv" {
             time_after_creation = "P83D"
           }
         }
+
+        tags = {
+          environment = "demo"
+        }
+      }
+    }
+
+    contacts = {
+      contact1 = {
+        email = "johndoe@contoso.com"
       }
     }
   }

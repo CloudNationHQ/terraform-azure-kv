@@ -36,3 +36,8 @@ output "tls_private_keys" {
     if endswith(key, "-priv")
   }
 }
+
+output "policies" {
+  description = "contains all key vault access policies"
+  value       = azurerm_key_vault_access_policy.policy
+}
