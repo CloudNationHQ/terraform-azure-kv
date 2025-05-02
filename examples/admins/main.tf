@@ -18,25 +18,25 @@ module "rg" {
 }
 
 ## No admins
-module "kv_1" {
+module "kv1" {
   source  = "cloudnationhq/kv/azure"
   version = "~> 4.0"
 
   vault = {
-    admins              = []
-    name                = "${module.naming.key_vault.name_unique}1"
-    location            = module.rg.groups.demo.location
-    resource_group_name = module.rg.groups.demo.name
+    enable_role_assignment = false
+    name                   = "${module.naming.key_vault.name_unique}1"
+    location               = module.rg.groups.demo.location
+    resource_group_name    = module.rg.groups.demo.name
   }
 }
 
 ## Multiple admins
-module "kv_2" {
+module "kv2" {
   source  = "cloudnationhq/kv/azure"
   version = "~> 4.0"
 
   vault = {
-    admins              = ["defc3bd7-5e15-4109-9800-92a80628c34d", "aabc3bd7-5e15-4109-9800-92a80628c34e"] ## IDs are fictional
+    admins              = ["12345678-5e15-4109-9800-109876543210", "12345678-2f4f-4afa-9259-109876543210"] ## IDs are fictional
     name                = "${module.naming.key_vault.name_unique}2"
     location            = module.rg.groups.demo.location
     resource_group_name = module.rg.groups.demo.name

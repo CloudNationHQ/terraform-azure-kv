@@ -30,8 +30,11 @@ resource "azurerm_key_vault" "keyvault" {
 
 # role assignments
 resource "azurerm_role_assignment" "admins" {
-  for_each = toset(
-    (lookup(var.vault, "admins", null)) != null ? lookup(var.vault, "admins", []) : [data.azurerm_client_config.current.object_id]
+  for_each = (
+    var.vault.enable_role_assignment == true ? var.vault.admins != null ?
+    { for admin in var.vault.admins : admin => admin } :
+    { "${data.azurerm_client_config.current.object_id}" = data.azurerm_client_config.current.object_id } :
+    {}
   )
 
   scope                = azurerm_key_vault.keyvault.id
@@ -51,6 +54,17 @@ resource "azurerm_key_vault_certificate_issuer" "issuer" {
   account_id    = each.value.account_id
   password      = each.value.password
   org_id        = each.value.org_id
+
+  dynamic "admin" {
+    for_each = try(each.value.admin, null) != null ? [each.value.admin] : []
+
+    content {
+      email_address = admin.value.email_address
+      first_name    = admin.value.first_name
+      last_name     = admin.value.last_name
+      phone         = admin.value.phone
+    }
+  }
 
   depends_on = [
     azurerm_role_assignment.admins
@@ -125,12 +139,14 @@ resource "random_password" "password" {
     var.vault.secrets.random_string, {}
   )
 
-  length      = each.value.length
-  special     = each.value.special
-  min_lower   = each.value.min_lower
-  min_upper   = each.value.min_upper
-  min_special = each.value.min_special
-  min_numeric = each.value.min_numeric
+  length           = each.value.length
+  special          = each.value.special
+  min_lower        = each.value.min_lower
+  min_upper        = each.value.min_upper
+  min_special      = each.value.min_special
+  min_numeric      = each.value.min_numeric
+  keepers          = each.value.keepers
+  override_special = each.value.override_special
 }
 
 # secrets

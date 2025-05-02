@@ -1,15 +1,15 @@
 # Admins
+By default, the module assigns the `Key Vault Administrator` role to the service principal running Terraform.
+This is done using `data.azurerm_client_config.current.object_id`, which ensures Terraform has the necessary access to manage Key Vault child resources such as secrets, keys, and certificates.
 
-By default the module sets the `Key Vault Administrator` role to the service principal running the module.
-This is done with `data.azurerm_client_config.current.object_id` and ensures that Terraform can still reach the Key Vault child resources like secrets, keys and/or certificates.
-If desired, this behaviour can be overriden with the `admins` property. 
+You can customize this behavior using the following options:
 
-To set one or more (other) admins:
+To set one or more custom admins:
 ```
-admin = ["defc3bd7-5e15-4109-9800-92a80628c34d", "aabc3bd7-5e15-4109-9800-92a80628c34e"]
+admins = ["defc3bd7-5e15-4109-9800-92a80628c34d", "aabc3bd7-5e15-4109-9800-92a80628c34e"]
 ```
 
-To prevent the RBAC admin role from being set:
+To prevent any admin role from being assigned:
 ```
-admin = []
+enable_role_assignment = false
 ```
