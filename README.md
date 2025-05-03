@@ -4,11 +4,15 @@
 
 ## Features
 
-- capability to handle keys, secrets, and certificates.
-- includes support for certificate issuers.
-- utilization of terratest for robust validation.
-- supports key rotation policy for enhanced security and compliance.
-- integrates seamlessly with private endpoint capabilities for direct and secure connectivity.
+Capability to handle keys, secrets, and certificates.
+
+Includes support for certificate issuers.
+
+Utilization of terratest for robust validation.
+
+Supports key rotation policy for enhanced security and compliance.
+
+Integrates seamlessly with private endpoint capabilities for direct and secure connectivity.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
