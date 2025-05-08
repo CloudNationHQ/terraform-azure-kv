@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v4.0.0...v4.1.0) (2025-05-08)
+
+
+### Features
+
+* replace deployment test code with module consumption and generated documentation ([#107](https://github.com/CloudNationHQ/terraform-azure-kv/issues/107)) ([3f861fa](https://github.com/CloudNationHQ/terraform-azure-kv/commit/3f861fabae03430c10a4a061b3e94cec21eefca7))
+
 ## [4.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v3.2.0...v4.0.0) (2025-05-02)
 
 
