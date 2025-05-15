@@ -312,8 +312,25 @@ resource "azurerm_key_vault_certificate" "cert" {
         }
       }
 
+      # dynamic "lifetime_action" {
+      #   for_each = try(
+      #     certificate_policy.value.lifetime_actions, {}
+      #   )
+      #
+      #   content {
+      #     action {
+      #       action_type = lifetime_action.value.action_type
+      #     }
+      #
+      #     trigger {
+      #       days_before_expiry  = lifetime_action.value.days_before_expiry
+      #       lifetime_percentage = lifetime_action.value.lifetime_percentage
+      #     }
+      #   }
+      # }
+
       dynamic "lifetime_action" {
-        for_each = try(
+        for_each = coalesce(
           certificate_policy.value.lifetime_actions, {}
         )
 
