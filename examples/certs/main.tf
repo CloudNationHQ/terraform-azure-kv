@@ -49,11 +49,9 @@ module "kv" {
           "1.3.6.1.5.5.7.3.1",
           "1.3.6.1.5.5.7.3.2"
         ]
-        lifetime_actions = {
-          action1 = {
-            action_type        = "AutoRenew"
-            days_before_expiry = 30
-          }
+        lifetime_action = {
+          action_type        = "AutoRenew"
+          days_before_expiry = 30
         }
         subject_alternative_names = {
           dns_names = ["app1.demo.org", "app1-dev.demo.org"]
