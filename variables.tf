@@ -114,11 +114,11 @@ variable "vault" {
         upns      = optional(list(string), [])
         emails    = optional(list(string), [])
       }))
-      lifetime_actions = optional(map(object({
+      lifetime_actions = optional(object({
         action_type         = string
         days_before_expiry  = optional(number, null)
         lifetime_percentage = optional(number, null)
-      })))
+      }))
     })), {})
     access_policies = optional(map(object({
       object_id               = optional(string)

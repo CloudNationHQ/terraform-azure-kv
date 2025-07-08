@@ -313,9 +313,7 @@ resource "azurerm_key_vault_certificate" "cert" {
       }
 
       dynamic "lifetime_action" {
-        for_each = try(
-          certificate_policy.value.lifetime_actions, {}
-        )
+        for_each = try(certificate_policy.value.lifetime_action, null) != null ? [certificate_policy.value.lifetime_action] : []
 
         content {
           action {
