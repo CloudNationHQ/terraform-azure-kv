@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v4.2.0...v4.2.1) (2025-09-01)
+
+
+### Bug Fixes
+
+* update to lookup ([#118](https://github.com/CloudNationHQ/terraform-azure-kv/issues/118)) ([7bbffbf](https://github.com/CloudNationHQ/terraform-azure-kv/commit/7bbffbf67ef251b9d55211b18c185e2d1d015dbd))
+
 ## [4.2.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v4.1.0...v4.2.0) (2025-07-08)
 
 
