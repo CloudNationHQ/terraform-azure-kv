@@ -334,8 +334,8 @@ resource "azurerm_key_vault_certificate" "cert" {
 }
 
 resource "azurerm_key_vault_access_policy" "policy" {
-  for_each = { for key, policy in try(
-    var.vault.access_policies, {}
+  for_each = { for key, policy in lookup(
+    var.vault, "access_policies", {}
   ) : key => policy if var.vault.enable_rbac_authorization == false }
 
   key_vault_id   = azurerm_key_vault.keyvault.id
