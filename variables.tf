@@ -2,8 +2,8 @@ variable "vault" {
   description = "describes key vault related configuration"
   type = object({
     name                                   = string
-    location                               = optional(string, null)
-    resource_group_name                    = optional(string, null)
+    location                               = optional(string)
+    resource_group_name                    = optional(string)
     enable_rbac_authorization              = optional(bool, true)
     tenant_id                              = optional(string)
     sku_name                               = optional(string, "standard")
@@ -27,34 +27,34 @@ variable "vault" {
       default_action             = optional(string, "Deny")
       ip_rules                   = optional(list(string), [])
       virtual_network_subnet_ids = optional(list(string), [])
-    }), null)
+    }))
     issuers = optional(map(object({
       name          = optional(string)
       provider_name = optional(string)
-      account_id    = optional(string, null)
-      password      = optional(string, null)
-      org_id        = optional(string, null)
+      account_id    = optional(string)
+      password      = optional(string)
+      org_id        = optional(string)
     })), {})
     contacts = optional(map(object({
       email = string
-      name  = optional(string, null)
-      phone = optional(string, null)
+      name  = optional(string)
+      phone = optional(string)
     })))
     keys = optional(map(object({
       name            = optional(string)
       key_type        = string
-      key_size        = optional(number, null)
+      key_size        = optional(number)
       key_opts        = optional(list(string))
-      curve           = optional(string, null)
-      not_before_date = optional(string, null)
-      expiration_date = optional(string, null)
+      curve           = optional(string)
+      not_before_date = optional(string)
+      expiration_date = optional(string)
       tags            = optional(map(string))
       rotation_policy = optional(object({
-        expire_after         = optional(string, null)
-        notify_before_expiry = optional(string, null)
+        expire_after         = optional(string)
+        notify_before_expiry = optional(string)
         automatic = optional(object({
-          time_after_creation = optional(string, null)
-          time_before_expiry  = optional(string, null)
+          time_after_creation = optional(string)
+          time_before_expiry  = optional(string)
         }))
       }))
     })), {})
@@ -63,9 +63,9 @@ variable "vault" {
         value           = optional(string)
         name            = optional(string)
         tags            = optional(map(string))
-        content_type    = optional(string, null)
-        expiration_date = optional(string, null)
-        not_before_date = optional(string, null)
+        content_type    = optional(string)
+        expiration_date = optional(string)
+        not_before_date = optional(string)
       })), {})
       random_string = optional(map(object({
         name             = optional(string)
@@ -75,21 +75,21 @@ variable "vault" {
         min_upper        = optional(number, 7)
         min_special      = optional(number, 4)
         min_numeric      = optional(number, 5)
-        override_special = optional(string, null)
+        override_special = optional(string)
         keepers          = optional(map(string))
         tags             = optional(map(string))
-        content_type     = optional(string, null)
-        expiration_date  = optional(string, null)
-        not_before_date  = optional(string, null)
+        content_type     = optional(string)
+        expiration_date  = optional(string)
+        not_before_date  = optional(string)
       })), {})
       tls_keys = optional(map(object({
         name            = optional(string)
         algorithm       = string
         rsa_bits        = optional(number, 2048)
         tags            = optional(map(string))
-        content_type    = optional(string, null)
-        expiration_date = optional(string, null)
-        not_before_date = optional(string, null)
+        content_type    = optional(string)
+        expiration_date = optional(string)
+        not_before_date = optional(string)
       })), {})
     }), {})
     certs = optional(map(object({
@@ -97,13 +97,13 @@ variable "vault" {
       tags = optional(map(string))
       certificate = optional(object({
         contents = string
-        password = optional(string, null)
+        password = optional(string)
       }))
       issuer             = optional(string, "Self")
       key_type           = optional(string, "RSA")
       key_size           = optional(number, 2048)
       reuse_key          = optional(bool, false)
-      curve              = optional(string, null)
+      curve              = optional(string)
       content_type       = optional(string, "application/x-pkcs12")
       subject            = string
       validity_in_months = number
@@ -116,14 +116,14 @@ variable "vault" {
       }))
       lifetime_actions = optional(object({
         action_type         = string
-        days_before_expiry  = optional(number, null)
-        lifetime_percentage = optional(number, null)
+        days_before_expiry  = optional(number)
+        lifetime_percentage = optional(number)
       }))
     })), {})
     access_policies = optional(map(object({
       object_id               = optional(string)
       tenant_id               = optional(string)
-      application_id          = optional(string, null)
+      application_id          = optional(string)
       key_permissions         = optional(list(string))
       secret_permissions      = optional(list(string))
       certificate_permissions = optional(list(string))
