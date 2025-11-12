@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.3.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v4.2.1...v4.3.0) (2025-11-12)
+
+
+### Features
+
+* **deps:** bump github.com/ulikunitz/xz from 0.5.10 to 0.5.14 in /tests ([#116](https://github.com/CloudNationHQ/terraform-azure-kv/issues/116)) ([a490ba2](https://github.com/CloudNationHQ/terraform-azure-kv/commit/a490ba20050a7b735923200479b38941db6af9ba))
+* remove redundant nulls and ensure all tests are runnable ([#127](https://github.com/CloudNationHQ/terraform-azure-kv/issues/127)) ([eb946cf](https://github.com/CloudNationHQ/terraform-azure-kv/commit/eb946cf28a228529bb0d0a06c5aa3db5023a5fc6))
+
 ## [4.2.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v4.2.0...v4.2.1) (2025-09-01)
 
 
