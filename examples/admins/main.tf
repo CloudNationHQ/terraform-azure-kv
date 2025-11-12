@@ -1,6 +1,8 @@
+data "azurerm_client_config" "current" {}
+
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.1"
+  version = "~> 0.25"
 
   suffix = ["demo", "dev"]
 }
@@ -36,7 +38,7 @@ module "kv2" {
   version = "~> 4.0"
 
   vault = {
-    admins              = ["12345678-5e15-4109-9800-109876543210", "12345678-2f4f-4afa-9259-109876543210"] ## IDs are fictional
+    admins              = [data.azurerm_client_config.current.object_id]
     name                = "${module.naming.key_vault.name_unique}2"
     location            = module.rg.groups.demo.location
     resource_group_name = module.rg.groups.demo.name

@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.1"
+  version = "~> 0.25"
 
   suffix = ["demo", "dev"]
 }
@@ -19,12 +19,12 @@ module "rg" {
 
 module "storage" {
   source  = "cloudnationhq/sa/azure"
-  version = "~> 2.0"
+  version = "~> 4.0"
 
   storage = {
-    name           = module.naming.storage_account.name_unique
-    location       = module.rg.groups.demo.location
-    resource_group = module.rg.groups.demo.name
+    name                = module.naming.storage_account.name_unique
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
   }
 }
 

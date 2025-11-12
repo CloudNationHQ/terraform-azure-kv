@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.1"
+  version = "~> 0.25"
 
   suffix = ["demo", "dev"]
 }
@@ -50,12 +50,6 @@ module "kv" {
         tags = {
           environment = "demo"
         }
-      }
-    }
-
-    contacts = {
-      contact1 = {
-        email = "johndoe@contoso.com"
       }
     }
   }

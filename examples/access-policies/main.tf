@@ -1,6 +1,8 @@
+data "azurerm_client_config" "current" {}
+
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.1"
+  version = "~> 0.25"
 
   suffix = ["demo", "dev"]
 }
@@ -28,7 +30,8 @@ module "kv" {
     enable_rbac_authorization = false
 
     access_policies = {
-      policy_sp = {
+      policy_current = {
+        object_id = data.azurerm_client_config.current.object_id
         key_permissions = [
           "all"
         ]
@@ -40,15 +43,6 @@ module "kv" {
         ]
         storage_permissions = [
           "all"
-        ]
-      }
-      policy_group = {
-        object_id = "12345678-abcd-efgh-ijkl-109876543210"
-        key_permissions = [
-          "Get", "List"
-        ]
-        secret_permissions = [
-          "Get", "List"
         ]
       }
     }
