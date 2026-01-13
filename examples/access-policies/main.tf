@@ -20,8 +20,7 @@ module "rg" {
 }
 
 module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 4.0"
+  source  = "../../"
 
   vault = {
     name                      = module.naming.key_vault.name_unique

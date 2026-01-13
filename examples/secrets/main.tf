@@ -29,8 +29,7 @@ module "storage" {
 }
 
 module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 4.0"
+  source  = "../../"
 
   naming = local.naming
 

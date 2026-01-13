@@ -39,8 +39,9 @@ module "network" {
 }
 
 module "kv" {
-  source  = "cloudnationhq/kv/azure"
-  version = "~> 4.0"
+  source = "../../"
+
+  naming = local.naming
 
   vault = {
     name                = module.naming.key_vault.name_unique
@@ -48,6 +49,19 @@ module "kv" {
     resource_group_name = module.rg.groups.demo.name
 
     public_network_access_enabled = false
+
+    endpoint = {
+      name      = module.naming.private_endpoint.name
+      subnet_id = module.network.subnets.sn1.id
+
+      private_dns_zone_group = {
+        private_dns_zone_ids = [module.private_dns.private_zones.vault.id]
+      }
+
+      private_service_connection = {
+        subresource_names = ["vault"]
+      }
+    }
   }
 }
 
@@ -72,26 +86,26 @@ module "private_dns" {
   }
 }
 
-module "privatelink" {
-  source  = "cloudnationhq/pe/azure"
-  version = "~> 2.0"
-
-  resource_group_name = module.rg.groups.demo.name
-  location            = module.rg.groups.demo.location
-
-  endpoints = {
-    vault = {
-      name      = module.naming.private_endpoint.name
-      subnet_id = module.network.subnets.sn1.id
-
-      private_dns_zone_group = {
-        private_dns_zone_ids = [module.private_dns.private_zones.vault.id]
-      }
-
-      private_service_connection = {
-        private_connection_resource_id = module.kv.vault.id
-        subresource_names              = ["vault"]
-      }
-    }
-  }
-}
+# module "privatelink" {
+#   source  = "cloudnationhq/pe/azure"
+#   version = "~> 2.0"
+#
+#   resource_group_name = module.rg.groups.demo.name
+#   location            = module.rg.groups.demo.location
+#
+#   endpoints = {
+#     vault = {
+#       name      = module.naming.private_endpoint.name
+#       subnet_id = module.network.subnets.sn1.id
+#
+#       private_dns_zone_group = {
+#         private_dns_zone_ids = [module.private_dns.private_zones.vault.id]
+#       }
+#
+#       private_service_connection = {
+#         private_connection_resource_id = module.kv.vault.id
+#         subresource_names              = ["vault"]
+#       }
+#     }
+#   }
+# }

@@ -28,6 +28,31 @@ variable "vault" {
       ip_rules                   = optional(list(string), [])
       virtual_network_subnet_ids = optional(list(string), [])
     }))
+    endpoint = optional(object({
+      name                          = string
+      location                      = optional(string)
+      resource_group_name           = optional(string)
+      subnet_id                     = string
+      custom_network_interface_name = optional(string)
+      tags                          = optional(map(string))
+      private_service_connection = object({
+        is_manual_connection              = optional(bool, false)
+        subresource_names                 = optional(list(string), [])
+        private_connection_resource_alias = optional(string)
+        request_message                   = optional(string)
+        name                              = optional(string)
+      })
+      private_dns_zone_group = optional(object({
+        name                 = optional(string, "default")
+        private_dns_zone_ids = list(string)
+      }))
+      ip_configurations = optional(map(object({
+        name               = optional(string)
+        private_ip_address = optional(string)
+        member_name        = optional(string)
+        subresource_name   = optional(string)
+      })), {})
+    }))
     issuers = optional(map(object({
       name          = optional(string)
       provider_name = optional(string)
