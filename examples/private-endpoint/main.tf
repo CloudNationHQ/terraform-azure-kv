@@ -59,6 +59,7 @@ module "kv" {
       }
 
       private_service_connection = {
+        name              = "kv"
         subresource_names = ["vault"]
       }
     }
