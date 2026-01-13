@@ -28,7 +28,7 @@ variable "vault" {
       ip_rules                   = optional(list(string), [])
       virtual_network_subnet_ids = optional(list(string), [])
     }))
-    endpoint = optional(object({
+    private_endpoint = optional(object({
       name                          = string
       location                      = optional(string)
       resource_group_name           = optional(string)

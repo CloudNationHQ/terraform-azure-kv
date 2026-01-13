@@ -50,7 +50,7 @@ module "kv" {
 
     public_network_access_enabled = false
 
-    endpoint = {
+    private_endpoint = {
       name      = module.naming.private_endpoint.name
       subnet_id = module.network.subnets.sn1.id
 
