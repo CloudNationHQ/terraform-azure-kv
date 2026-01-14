@@ -49,6 +49,7 @@ The following resources are used by this module:
 - [azurerm_key_vault_key.kv_keys](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_key) (resource)
 - [azurerm_key_vault_secret.secrets](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) (resource)
 - [azurerm_key_vault_secret.tls_secrets](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) (resource)
+- [azurerm_private_endpoint.endpoint](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) (resource)
 - [azurerm_role_assignment.admins](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [random_password.password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) (resource)
 - [tls_private_key.tls_key](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) (resource)
@@ -69,7 +70,7 @@ object({
     name                                   = string
     location                               = optional(string)
     resource_group_name                    = optional(string)
-    enable_rbac_authorization              = optional(bool, true)
+    rbac_authorization_enabled             = optional(bool, true)
     tenant_id                              = optional(string)
     sku_name                               = optional(string, "standard")
     tags                                   = optional(map(string))
@@ -92,6 +93,31 @@ object({
       default_action             = optional(string, "Deny")
       ip_rules                   = optional(list(string), [])
       virtual_network_subnet_ids = optional(list(string), [])
+    }))
+    private_endpoint = optional(object({
+      name                          = string
+      location                      = optional(string)
+      resource_group_name           = optional(string)
+      subnet_id                     = string
+      custom_network_interface_name = optional(string)
+      tags                          = optional(map(string))
+      private_service_connection = object({
+        is_manual_connection              = optional(bool, false)
+        subresource_names                 = optional(list(string), [])
+        private_connection_resource_alias = optional(string)
+        request_message                   = optional(string)
+        name                              = optional(string)
+      })
+      private_dns_zone_group = optional(object({
+        name                 = optional(string, "default")
+        private_dns_zone_ids = list(string)
+      }))
+      ip_configurations = optional(map(object({
+        name               = optional(string)
+        private_ip_address = optional(string)
+        member_name        = optional(string)
+        subresource_name   = optional(string)
+      })), {})
     }))
     issuers = optional(map(object({
       name          = optional(string)
