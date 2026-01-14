@@ -12,7 +12,7 @@ resource "azurerm_key_vault" "keyvault" {
   enabled_for_disk_encryption     = var.vault.enabled_for_disk_encryption
   enabled_for_template_deployment = var.vault.enabled_for_template_deployment
   purge_protection_enabled        = var.vault.purge_protection_enabled
-  enable_rbac_authorization       = var.vault.enable_rbac_authorization
+  rbac_authorization_enabled      = var.vault.rbac_authorization_enabled
   public_network_access_enabled   = var.vault.public_network_access_enabled
   soft_delete_retention_days      = var.vault.soft_delete_retention_days
 
@@ -188,6 +188,12 @@ resource "azurerm_key_vault_key" "kv_keys" {
     azurerm_role_assignment.admins,
     azurerm_private_endpoint.endpoint
   ]
+
+  lifecycle {
+    ignore_changes = [
+      expiration_date
+    ]
+  }
 }
 
 # Random password generator
@@ -394,7 +400,7 @@ resource "azurerm_key_vault_certificate" "cert" {
 resource "azurerm_key_vault_access_policy" "policy" {
   for_each = { for key, policy in lookup(
     var.vault, "access_policies", {}
-  ) : key => policy if var.vault.enable_rbac_authorization == false }
+  ) : key => policy if var.vault.rbac_authorization_enabled == false }
 
   key_vault_id   = azurerm_key_vault.keyvault.id
   tenant_id      = try(each.value.tenant_id, null) != null ? each.value.tenant_id : data.azurerm_client_config.current.tenant_id
