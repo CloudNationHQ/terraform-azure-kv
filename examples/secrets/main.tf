@@ -29,7 +29,8 @@ module "storage" {
 }
 
 module "kv" {
-  source = "../../"
+  source  = "cloudnationhq/kv/azure"
+  version = "~> 5.0"
 
   vault = {
     name                = module.naming.key_vault.name_unique

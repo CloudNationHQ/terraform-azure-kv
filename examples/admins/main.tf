@@ -21,7 +21,8 @@ module "rg" {
 
 ## No admins
 module "kv1" {
-  source = "../../"
+  source  = "cloudnationhq/kv/azure"
+  version = "~> 5.0"
 
   vault = {
     enable_role_assignment = false
@@ -33,7 +34,8 @@ module "kv1" {
 
 ## Multiple admins
 module "kv2" {
-  source = "../../"
+  source  = "cloudnationhq/kv/azure"
+  version = "~> 5.0"
 
   vault = {
     admins              = [data.azurerm_client_config.current.object_id]

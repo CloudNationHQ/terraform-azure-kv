@@ -1,7 +1,14 @@
 data "azurerm_client_config" "current" {}
 
+data "azurerm_key_vault" "this" {
+  for_each            = var.vault.use_existing == true ? { "this" = {} } : {}
+  name                = var.vault.name
+  resource_group_name = coalesce(var.vault.resource_group_name, var.resource_group_name)
+}
+
 # keyvault
 resource "azurerm_key_vault" "this" {
+  for_each                        = var.vault.use_existing != true ? { "this" = {} } : {}
   name                            = var.vault.name
   resource_group_name             = coalesce(var.vault.resource_group_name, var.resource_group_name)
   location                        = coalesce(var.vault.location, var.location)
@@ -32,12 +39,12 @@ resource "azurerm_key_vault" "this" {
 resource "azurerm_role_assignment" "admins" {
   for_each = (
     coalesce(var.vault.enable_role_assignment, true) == true ? var.vault.admins != null ?
-    { for admin in var.vault.admins : admin => admin } :
+    { for idx, admin in var.vault.admins : tostring(idx) => admin } :
     { (data.azurerm_client_config.current.object_id) = data.azurerm_client_config.current.object_id } :
     {}
   )
 
-  scope                = azurerm_key_vault.this.id
+  scope                = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
   role_definition_name = "Key Vault Administrator"
   principal_id         = each.value
 }
@@ -57,7 +64,7 @@ resource "azurerm_private_endpoint" "this" {
   private_service_connection {
     name                           = coalesce(each.value.private_service_connection_name, "${each.key}-connection")
     is_manual_connection           = coalesce(each.value.is_manual_connection, false)
-    private_connection_resource_id = azurerm_key_vault.this.id
+    private_connection_resource_id = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
     subresource_names              = each.value.subresource_name != null ? [each.value.subresource_name] : ["vault"]
     request_message                = each.value.request_message
   }
@@ -88,7 +95,7 @@ resource "azurerm_key_vault_certificate_issuer" "this" {
   for_each = (var.vault.issuers != null ? var.vault.issuers : {})
 
   name          = coalesce(each.value.name, each.key)
-  key_vault_id  = azurerm_key_vault.this.id
+  key_vault_id  = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
   provider_name = coalesce(each.value.provider_name, each.key)
   account_id    = each.value.account_id
   password      = each.value.password
@@ -114,7 +121,7 @@ resource "azurerm_key_vault_certificate_issuer" "this" {
 resource "azurerm_key_vault_certificate_contacts" "this" {
   for_each = var.vault.contacts != null ? { "this" = {} } : {}
 
-  key_vault_id = azurerm_key_vault.this.id
+  key_vault_id = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
 
   dynamic "contact" {
     for_each = (var.vault.contacts != null ? var.vault.contacts : {})
@@ -136,7 +143,7 @@ resource "azurerm_key_vault_key" "this" {
   for_each = (var.vault.keys != null ? var.vault.keys : {})
 
   name            = coalesce(each.value.name, replace(each.key, "_", "-"))
-  key_vault_id    = azurerm_key_vault.this.id
+  key_vault_id    = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
   key_type        = each.value.key_type
   key_size        = each.value.key_size
   key_opts        = each.value.key_opts
@@ -184,6 +191,9 @@ resource "random_password" "this" {
   ))
 
   length           = var.vault.secrets.random_string[each.key].length
+  numeric          = var.vault.secrets.random_string[each.key].numeric
+  lower            = var.vault.secrets.random_string[each.key].lower
+  upper            = var.vault.secrets.random_string[each.key].upper
   special          = var.vault.secrets.random_string[each.key].special
   min_lower        = var.vault.secrets.random_string[each.key].min_lower
   min_upper        = var.vault.secrets.random_string[each.key].min_upper
@@ -200,25 +210,20 @@ resource "azurerm_key_vault_secret" "this" {
     { for k in keys(var.vault.secrets == null || var.vault.secrets.predefined_string == null ? {} : var.vault.secrets.predefined_string) : k => "predefined_string" }
   ))
 
-  name             = local.secrets[each.key].name
-  value            = local.secrets[each.key].value
-  value_wo         = local.secrets[each.key].value_wo
-  value_wo_version = local.secrets[each.key].value_wo_version
-  key_vault_id     = azurerm_key_vault.this.id
-  tags             = local.secrets[each.key].tags
-  content_type     = local.secrets[each.key].content_type
-  expiration_date  = local.secrets[each.key].expiration_date
-  not_before_date  = local.secrets[each.key].not_before_date
+  name             = each.value == "random_string" ? coalesce(var.vault.secrets.random_string[each.key].name, replace(each.key, "_", "-")) : coalesce(var.vault.secrets.predefined_string[each.key].name, replace(each.key, "_", "-"))
+  value            = each.value == "random_string" ? random_password.this[each.key].result : var.vault.secrets.predefined_string[each.key].value
+  value_wo         = each.value == "random_string" ? null : var.vault.secrets.predefined_string[each.key].value_wo
+  value_wo_version = each.value == "random_string" ? null : var.vault.secrets.predefined_string[each.key].value_wo_version
+  key_vault_id     = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
+  tags             = each.value == "random_string" ? coalesce(var.vault.secrets.random_string[each.key].tags, var.tags) : coalesce(var.vault.secrets.predefined_string[each.key].tags, var.tags)
+  content_type     = each.value == "random_string" ? var.vault.secrets.random_string[each.key].content_type : var.vault.secrets.predefined_string[each.key].content_type
+  expiration_date  = each.value == "random_string" ? var.vault.secrets.random_string[each.key].expiration_date : var.vault.secrets.predefined_string[each.key].expiration_date
+  not_before_date  = each.value == "random_string" ? var.vault.secrets.random_string[each.key].not_before_date : var.vault.secrets.predefined_string[each.key].not_before_date
 
   depends_on = [
     azurerm_role_assignment.admins,
     azurerm_private_endpoint.this
   ]
-}
-
-moved {
-  from = azurerm_key_vault_secret.secrets
-  to   = azurerm_key_vault_secret.this
 }
 
 # tls keys
@@ -229,8 +234,9 @@ resource "tls_private_key" "this" {
     : []
   ))
 
-  algorithm = var.vault.secrets.tls_keys[each.key].algorithm
-  rsa_bits  = var.vault.secrets.tls_keys[each.key].rsa_bits
+  algorithm   = var.vault.secrets.tls_keys[each.key].algorithm
+  rsa_bits    = var.vault.secrets.tls_keys[each.key].rsa_bits
+  ecdsa_curve = var.vault.secrets.tls_keys[each.key].ecdsa_curve
 }
 
 resource "azurerm_key_vault_secret" "tls" {
@@ -248,7 +254,7 @@ resource "azurerm_key_vault_secret" "tls" {
     ) : (
     tls_private_key.this[trimsuffix(each.key, "-priv")].private_key_pem
   )
-  key_vault_id    = azurerm_key_vault.this.id
+  key_vault_id    = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
   tags            = coalesce(var.vault.secrets.tls_keys[trimsuffix(each.key, "-${each.value}")].tags, var.tags)
   content_type    = var.vault.secrets.tls_keys[trimsuffix(each.key, "-${each.value}")].content_type
   not_before_date = var.vault.secrets.tls_keys[trimsuffix(each.key, "-${each.value}")].not_before_date
@@ -264,7 +270,7 @@ resource "azurerm_key_vault_certificate" "this" {
   for_each = (var.vault.certs != null ? var.vault.certs : {})
 
   name         = coalesce(each.value.name, replace(each.key, "_", "-"))
-  key_vault_id = azurerm_key_vault.this.id
+  key_vault_id = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
   tags         = coalesce(each.value.tags, var.tags)
 
   dynamic "certificate" {
@@ -340,7 +346,7 @@ resource "azurerm_key_vault_access_policy" "this" {
     if coalesce(var.vault.rbac_authorization_enabled, true) == false
   }
 
-  key_vault_id   = azurerm_key_vault.this.id
+  key_vault_id   = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
   tenant_id      = coalesce(each.value.tenant_id, data.azurerm_client_config.current.tenant_id)
   object_id      = coalesce(each.value.object_id, data.azurerm_client_config.current.object_id)
   application_id = each.value.application_id
@@ -352,33 +358,6 @@ resource "azurerm_key_vault_access_policy" "this" {
 }
 
 locals {
-  secrets = merge(
-    {
-      for k, v in(var.vault.secrets == null || var.vault.secrets.random_string == null ? {} : var.vault.secrets.random_string) : k => {
-        name             = coalesce(v.name, replace(k, "_", "-"))
-        value            = random_password.this[k].result
-        value_wo         = null
-        value_wo_version = null
-        tags             = coalesce(v.tags, var.tags)
-        content_type     = v.content_type
-        expiration_date  = v.expiration_date
-        not_before_date  = v.not_before_date
-      }
-    },
-    {
-      for k, v in(var.vault.secrets == null || var.vault.secrets.predefined_string == null ? {} : var.vault.secrets.predefined_string) : k => {
-        name             = coalesce(v.name, replace(k, "_", "-"))
-        value            = v.value
-        value_wo         = v.value_wo
-        value_wo_version = v.value_wo_version
-        tags             = coalesce(v.tags, var.tags)
-        content_type     = v.content_type
-        expiration_date  = v.expiration_date
-        not_before_date  = v.not_before_date
-      }
-    }
-  )
-
   all_key_permissions = [
     "Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get",
     "Import", "List", "Purge", "Recover", "Restore", "Sign",

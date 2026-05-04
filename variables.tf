@@ -14,6 +14,7 @@ variable "vault" {
     purge_protection_enabled        = optional(bool)
     public_network_access_enabled   = optional(bool)
     soft_delete_retention_days      = optional(number)
+    use_existing                    = optional(bool)
     admins                          = optional(list(string))
     enable_role_assignment          = optional(bool)
     network_acls = optional(object({
@@ -105,6 +106,9 @@ variable "vault" {
       random_string = optional(map(object({
         name             = optional(string)
         length           = number
+        numeric          = optional(bool)
+        lower            = optional(bool)
+        upper            = optional(bool)
         special          = optional(bool)
         min_lower        = optional(number)
         min_upper        = optional(number)
@@ -121,6 +125,7 @@ variable "vault" {
         name            = optional(string)
         algorithm       = string
         rsa_bits        = optional(number)
+        ecdsa_curve     = optional(string)
         tags            = optional(map(string))
         content_type    = optional(string)
         expiration_date = optional(string)

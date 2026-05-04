@@ -1,6 +1,6 @@
 output "vault" {
   description = "contains all key vault config"
-  value       = azurerm_key_vault.this
+  value       = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"] : azurerm_key_vault.this["this"]
 }
 
 output "keys" {
