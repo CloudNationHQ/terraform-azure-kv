@@ -47,3 +47,8 @@ moved {
   from = azurerm_private_endpoint.endpoint
   to   = azurerm_private_endpoint.this
 }
+
+moved {
+  from = azurerm_key_vault_secret.tls_secrets
+  to   = azurerm_key_vault_secret.tls
+}
