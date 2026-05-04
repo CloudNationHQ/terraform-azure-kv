@@ -18,9 +18,7 @@ module "rg" {
 }
 
 module "kv" {
-  source  = "../../"
-
-  naming = local.naming
+  source = "../../"
 
   vault = {
     name                = module.naming.key_vault.name_unique

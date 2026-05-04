@@ -20,13 +20,13 @@ module "rg" {
 }
 
 module "kv" {
-  source  = "../../"
+  source = "../../"
 
   vault = {
     name                      = module.naming.key_vault.name_unique
     location                  = module.rg.groups.demo.location
     resource_group_name       = module.rg.groups.demo.name
-    enable_rbac_authorization = false
+    rbac_authorization_enabled = false
 
     access_policies = {
       policy_current = {

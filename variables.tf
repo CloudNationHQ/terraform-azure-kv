@@ -1,65 +1,73 @@
 variable "vault" {
   description = "describes key vault related configuration"
   type = object({
-    name                                   = string
-    location                               = optional(string)
-    resource_group_name                    = optional(string)
-    rbac_authorization_enabled             = optional(bool, true)
-    tenant_id                              = optional(string)
-    sku_name                               = optional(string, "standard")
-    tags                                   = optional(map(string))
-    enabled_for_deployment                 = optional(bool, true)
-    enabled_for_disk_encryption            = optional(bool, true)
-    enabled_for_template_deployment        = optional(bool, true)
-    purge_protection_enabled               = optional(bool, true)
-    public_network_access_enabled          = optional(bool, true)
-    soft_delete_retention_days             = optional(number, 90)
-    delegated_managed_identity_resource_id = optional(string)
-    skip_service_principal_aad_check       = optional(bool)
-    condition                              = optional(string)
-    condition_version                      = optional(string)
-    principal_type                         = optional(string)
-    role_definition_id                     = optional(string)
-    admins                                 = optional(list(string))
-    enable_role_assignment                 = optional(bool, true)
+    name                            = string
+    location                        = optional(string)
+    resource_group_name             = optional(string)
+    rbac_authorization_enabled      = optional(bool)
+    tenant_id                       = optional(string)
+    sku_name                        = optional(string)
+    tags                            = optional(map(string))
+    enabled_for_deployment          = optional(bool)
+    enabled_for_disk_encryption     = optional(bool)
+    enabled_for_template_deployment = optional(bool)
+    purge_protection_enabled        = optional(bool)
+    public_network_access_enabled   = optional(bool)
+    soft_delete_retention_days      = optional(number)
+    admins                          = optional(list(string))
+    enable_role_assignment          = optional(bool)
     network_acls = optional(object({
-      bypass                     = optional(string, "AzureServices")
-      default_action             = optional(string, "Deny")
-      ip_rules                   = optional(list(string), [])
-      virtual_network_subnet_ids = optional(list(string), [])
+      bypass                     = optional(string)
+      default_action             = optional(string)
+      ip_rules                   = optional(list(string))
+      virtual_network_subnet_ids = optional(list(string))
     }))
-    private_endpoint = optional(object({
-      name                          = string
-      location                      = optional(string)
-      resource_group_name           = optional(string)
-      subnet_id                     = string
-      custom_network_interface_name = optional(string)
-      tags                          = optional(map(string))
-      private_service_connection = object({
-        is_manual_connection              = optional(bool, false)
-        subresource_names                 = optional(list(string), [])
-        private_connection_resource_alias = optional(string)
-        request_message                   = optional(string)
-        name                              = optional(string)
-      })
-      private_dns_zone_group = optional(object({
-        name                 = optional(string, "default")
-        private_dns_zone_ids = list(string)
-      }))
+    private_endpoints = optional(map(object({
+      name                            = optional(string)
+      subnet_resource_id              = string
+      subresource_name                = optional(string)
+      private_dns_zone_resource_ids   = optional(list(string))
+      application_security_group_ids  = optional(list(string))
+      custom_network_interface_name   = optional(string)
+      tags                            = optional(map(string))
+      private_service_connection_name = optional(string)
+      is_manual_connection            = optional(bool)
+      request_message                 = optional(string)
       ip_configurations = optional(map(object({
         name               = optional(string)
         private_ip_address = optional(string)
         member_name        = optional(string)
         subresource_name   = optional(string)
-      })), {})
-    }))
+      })))
+      role_assignments = optional(map(object({
+        role_definition_id_or_name             = string
+        principal_id                           = string
+        description                            = optional(string)
+        skip_service_principal_aad_check       = optional(bool)
+        condition                              = optional(string)
+        condition_version                      = optional(string)
+        delegated_managed_identity_resource_id = optional(string)
+        principal_type                         = optional(string)
+      })))
+      lock = optional(object({
+        kind = string
+        name = optional(string)
+      }))
+    })))
     issuers = optional(map(object({
       name          = optional(string)
       provider_name = optional(string)
       account_id    = optional(string)
       password      = optional(string)
       org_id        = optional(string)
-    })), {})
+      admin = optional(map(object({
+        email_address = string
+        first_name    = optional(string)
+        last_name     = optional(string)
+        phone         = optional(string)
+      })))
+
+    })))
     contacts = optional(map(object({
       email = string
       name  = optional(string)
@@ -82,41 +90,43 @@ variable "vault" {
           time_before_expiry  = optional(string)
         }))
       }))
-    })), {})
+    })))
     secrets = optional(object({
       predefined_string = optional(map(object({
-        value           = optional(string)
-        name            = optional(string)
-        tags            = optional(map(string))
-        content_type    = optional(string)
-        expiration_date = optional(string)
-        not_before_date = optional(string)
-      })), {})
+        value            = optional(string)
+        value_wo         = optional(string)
+        value_wo_version = optional(string)
+        name             = optional(string)
+        tags             = optional(map(string))
+        content_type     = optional(string)
+        expiration_date  = optional(string)
+        not_before_date  = optional(string)
+      })))
       random_string = optional(map(object({
         name             = optional(string)
         length           = number
-        special          = optional(bool, true)
-        min_lower        = optional(number, 5)
-        min_upper        = optional(number, 7)
-        min_special      = optional(number, 4)
-        min_numeric      = optional(number, 5)
+        special          = optional(bool)
+        min_lower        = optional(number)
+        min_upper        = optional(number)
+        min_special      = optional(number)
+        min_numeric      = optional(number)
         override_special = optional(string)
         keepers          = optional(map(string))
         tags             = optional(map(string))
         content_type     = optional(string)
         expiration_date  = optional(string)
         not_before_date  = optional(string)
-      })), {})
+      })))
       tls_keys = optional(map(object({
         name            = optional(string)
         algorithm       = string
-        rsa_bits        = optional(number, 2048)
+        rsa_bits        = optional(number)
         tags            = optional(map(string))
         content_type    = optional(string)
         expiration_date = optional(string)
         not_before_date = optional(string)
-      })), {})
-    }), {})
+      })))
+    }))
     certs = optional(map(object({
       name = optional(string)
       tags = optional(map(string))
@@ -124,27 +134,27 @@ variable "vault" {
         contents = string
         password = optional(string)
       }))
-      issuer             = optional(string, "Self")
-      key_type           = optional(string, "RSA")
-      key_size           = optional(number, 2048)
-      reuse_key          = optional(bool, false)
+      issuer             = optional(string)
+      key_type           = optional(string)
+      key_size           = optional(number)
+      reuse_key          = optional(bool)
       curve              = optional(string)
-      content_type       = optional(string, "application/x-pkcs12")
+      content_type       = optional(string)
       subject            = string
       validity_in_months = number
       key_usage          = list(string)
-      extended_key_usage = optional(list(string), [])
+      extended_key_usage = optional(list(string))
       subject_alternative_names = optional(object({
-        dns_names = optional(list(string), [])
-        upns      = optional(list(string), [])
-        emails    = optional(list(string), [])
+        dns_names = optional(list(string))
+        upns      = optional(list(string))
+        emails    = optional(list(string))
       }))
-      lifetime_actions = optional(object({
+      lifetime_action = optional(object({
         action_type         = string
         days_before_expiry  = optional(number)
         lifetime_percentage = optional(number)
       }))
-    })), {})
+    })))
     access_policies = optional(map(object({
       object_id               = optional(string)
       tenant_id               = optional(string)
@@ -153,19 +163,20 @@ variable "vault" {
       secret_permissions      = optional(list(string))
       certificate_permissions = optional(list(string))
       storage_permissions     = optional(list(string))
-    })), {})
+    })))
   })
+
+  validation {
+    condition     = lookup(var.vault, "location", null) != null || var.location != null
+    error_message = "location must be set on var.vault.location or on the module-level var.location."
+  }
+
+  validation {
+    condition     = lookup(var.vault, "resource_group_name", null) != null || var.resource_group_name != null
+    error_message = "resource_group_name must be set on var.vault.resource_group_name or on the module-level var.resource_group_name."
+  }
 }
 
-variable "naming" {
-  description = "contains naming convention"
-  type = object({
-    key_vault_key         = optional(string)
-    key_vault_secret      = optional(string)
-    key_vault_certificate = optional(string)
-  })
-  default = {}
-}
 
 variable "location" {
   description = "default azure region to be used."

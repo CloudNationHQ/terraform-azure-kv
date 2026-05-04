@@ -29,9 +29,7 @@ module "storage" {
 }
 
 module "kv" {
-  source  = "../../"
-
-  naming = local.naming
+  source = "../../"
 
   vault = {
     name                = module.naming.key_vault.name_unique
@@ -45,7 +43,11 @@ module "kv" {
         }
       }
       random_string = {
-        example = {
+        example-1 = {
+          length  = 24
+          special = false
+        }
+        example-2 = {
           length  = 24
           special = false
         }

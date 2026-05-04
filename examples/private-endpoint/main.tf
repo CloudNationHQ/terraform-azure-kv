@@ -21,8 +21,6 @@ module "network" {
   source  = "cloudnationhq/vnet/azure"
   version = "~> 9.0"
 
-  naming = local.naming
-
   vnet = {
     name                = module.naming.virtual_network.name
     location            = module.rg.groups.demo.location
@@ -41,8 +39,6 @@ module "network" {
 module "kv" {
   source = "../../"
 
-  naming = local.naming
-
   vault = {
     name                = module.naming.key_vault.name_unique
     location            = module.rg.groups.demo.location
@@ -50,17 +46,13 @@ module "kv" {
 
     public_network_access_enabled = false
 
-    private_endpoint = {
-      name      = module.naming.private_endpoint.name
-      subnet_id = module.network.subnets.sn1.id
-
-      private_dns_zone_group = {
-        private_dns_zone_ids = [module.private_dns.private_zones.vault.id]
-      }
-
-      private_service_connection = {
-        name              = "kv"
-        subresource_names = ["vault"]
+    private_endpoints = {
+      default = {
+        name                            = module.naming.private_endpoint.name
+        subnet_resource_id              = module.network.subnets.sn1.id
+        private_dns_zone_resource_ids   = [module.private_dns.private_zones.vault.id]
+        private_service_connection_name = "kv"
+        subresource_name                = "vault"
       }
     }
   }
@@ -86,27 +78,3 @@ module "private_dns" {
     }
   }
 }
-
-# module "privatelink" {
-#   source  = "cloudnationhq/pe/azure"
-#   version = "~> 2.0"
-#
-#   resource_group_name = module.rg.groups.demo.name
-#   location            = module.rg.groups.demo.location
-#
-#   endpoints = {
-#     vault = {
-#       name      = module.naming.private_endpoint.name
-#       subnet_id = module.network.subnets.sn1.id
-#
-#       private_dns_zone_group = {
-#         private_dns_zone_ids = [module.private_dns.private_zones.vault.id]
-#       }
-#
-#       private_service_connection = {
-#         private_connection_resource_id = module.kv.vault.id
-#         subresource_names              = ["vault"]
-#       }
-#     }
-#   }
-# }

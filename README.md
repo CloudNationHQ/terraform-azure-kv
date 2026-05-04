@@ -14,6 +14,12 @@ Supports key rotation policy for enhanced security and compliance.
 
 Integrates seamlessly with private endpoint capabilities for direct and secure connectivity.
 
+## Private Endpoint
+
+This module embeds private endpoint support directly (`vault.private_endpoints`). Embedding is the right choice when the Key Vault and its data-plane children (secrets, keys, certificates) are managed in the same Terraform apply with public network access disabled — Terraform has no network path to the vault's data plane without the PE in place during the same run.
+
+When the PE belongs to a different state file or team (e.g. a platform networking team owns connectivity), use our standalone [terraform-azure-pe](https://github.com/CloudNationHQ/terraform-azure-pe) module instead and keep the vault publicly accessible or accept a two-phase apply. Both patterns are supported and the choice belongs to the caller.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
