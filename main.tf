@@ -195,10 +195,10 @@ resource "random_password" "this" {
   lower            = var.vault.secrets.random_string[each.key].lower
   upper            = var.vault.secrets.random_string[each.key].upper
   special          = var.vault.secrets.random_string[each.key].special
-  min_lower        = var.vault.secrets.random_string[each.key].min_lower
-  min_upper        = var.vault.secrets.random_string[each.key].min_upper
-  min_special      = var.vault.secrets.random_string[each.key].min_special
-  min_numeric      = var.vault.secrets.random_string[each.key].min_numeric
+  min_lower        = coalesce(var.vault.secrets.random_string[each.key].min_lower, 5)
+  min_upper        = coalesce(var.vault.secrets.random_string[each.key].min_upper, 7)
+  min_special      = coalesce(var.vault.secrets.random_string[each.key].min_special, 4)
+  min_numeric      = coalesce(var.vault.secrets.random_string[each.key].min_numeric, 5)
   keepers          = var.vault.secrets.random_string[each.key].keepers
   override_special = var.vault.secrets.random_string[each.key].override_special
 }
