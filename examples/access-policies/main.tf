@@ -24,9 +24,9 @@ module "kv" {
   version = "~> 5.0"
 
   vault = {
-    name                      = module.naming.key_vault.name_unique
-    location                  = module.rg.groups.demo.location
-    resource_group_name       = module.rg.groups.demo.name
+    name                       = module.naming.key_vault.name_unique
+    location                   = module.rg.groups.demo.location
+    resource_group_name        = module.rg.groups.demo.name
     rbac_authorization_enabled = false
 
     access_policies = {
