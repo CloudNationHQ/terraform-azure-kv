@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v4.3.0...v5.0.0) (2026-05-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* this change causes recreates
+
+### Features
+
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#132](https://github.com/CloudNationHQ/terraform-azure-kv/issues/132)) ([b262153](https://github.com/CloudNationHQ/terraform-azure-kv/commit/b262153e9d497d3da09d5d4b576cde5978e56900))
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#134](https://github.com/CloudNationHQ/terraform-azure-kv/issues/134)) ([0a399a4](https://github.com/CloudNationHQ/terraform-azure-kv/commit/0a399a48acc0d75f913313099cf995796e252306))
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#135](https://github.com/CloudNationHQ/terraform-azure-kv/issues/135)) ([d64ce62](https://github.com/CloudNationHQ/terraform-azure-kv/commit/d64ce623391cb4ccdf16e2c3cead6c55f2096af5))
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#136](https://github.com/CloudNationHQ/terraform-azure-kv/issues/136)) ([e3f6610](https://github.com/CloudNationHQ/terraform-azure-kv/commit/e3f661080868e90b7eceea50ddc8b7ec0a955e8c))
+* **deps:** bump golang.org/x/crypto from 0.36.0 to 0.45.0 in /tests ([#129](https://github.com/CloudNationHQ/terraform-azure-kv/issues/129)) ([959d36b](https://github.com/CloudNationHQ/terraform-azure-kv/commit/959d36beb95422aae437242972eef0e6c2fe5846))
+* refactor kv module ([#137](https://github.com/CloudNationHQ/terraform-azure-kv/issues/137)) ([55f8ce0](https://github.com/CloudNationHQ/terraform-azure-kv/commit/55f8ce0b173532a3f5bfa212f214e00f758449b6))
+
 ## [4.3.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v4.2.1...v4.3.0) (2025-11-12)
 
 
