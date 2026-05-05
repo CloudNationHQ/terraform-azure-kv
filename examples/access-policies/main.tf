@@ -21,13 +21,13 @@ module "rg" {
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   vault = {
-    name                      = module.naming.key_vault.name_unique
-    location                  = module.rg.groups.demo.location
-    resource_group_name       = module.rg.groups.demo.name
-    enable_rbac_authorization = false
+    name                       = module.naming.key_vault.name_unique
+    location                   = module.rg.groups.demo.location
+    resource_group_name        = module.rg.groups.demo.name
+    rbac_authorization_enabled = false
 
     access_policies = {
       policy_current = {

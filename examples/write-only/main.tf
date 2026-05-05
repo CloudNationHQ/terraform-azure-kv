@@ -26,29 +26,26 @@ module "kv" {
     location            = module.rg.groups.demo.location
     resource_group_name = module.rg.groups.demo.name
 
-    keys = {
-      example = {
-        key_type = "RSA"
-        key_size = 2048
-
-        key_opts = [
-          "decrypt", "encrypt",
-          "sign", "unwrapKey",
-          "verify", "wrapKey"
-        ]
-
-        rotation_policy = {
-          expire_after         = "P90D"
-          notify_before_expiry = "P30D"
-          automatic = {
-            time_after_creation = "P83D"
-          }
+    secrets = {
+      predefined_string = {
+        sendgrid_api_key = {
+          value_wo         = "SG.placeholder-sendgrid-api-key"
+          value_wo_version = "1"
+          content_type     = "text/plain"
         }
-
-        tags = {
-          environment = "demo"
+        stripe_secret_key = {
+          value_wo         = "sk_live_placeholder-stripe-secret-key"
+          value_wo_version = "1"
+          content_type     = "text/plain"
+        }
+        db_password = {
+          value_wo         = "placeholder-database-password"
+          value_wo_version = "1"
+          content_type     = "text/plain"
         }
       }
     }
   }
+
+  tags = { environment = "demo" }
 }

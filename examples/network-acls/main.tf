@@ -21,8 +21,6 @@ module "network" {
   source  = "cloudnationhq/vnet/azure"
   version = "~> 9.0"
 
-  naming = local.naming
-
   vnet = {
     name                = module.naming.virtual_network.name
     location            = module.rg.groups.demo.location
@@ -42,7 +40,7 @@ module "network" {
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   vault = {
     name                = module.naming.key_vault.name_unique

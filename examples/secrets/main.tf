@@ -30,9 +30,7 @@ module "storage" {
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 4.0"
-
-  naming = local.naming
+  version = "~> 5.0"
 
   vault = {
     name                = module.naming.key_vault.name_unique
@@ -46,7 +44,11 @@ module "kv" {
         }
       }
       random_string = {
-        example = {
+        example-1 = {
+          length  = 24
+          special = false
+        }
+        example-2 = {
           length  = 24
           special = false
         }

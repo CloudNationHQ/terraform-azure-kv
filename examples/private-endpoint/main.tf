@@ -21,8 +21,6 @@ module "network" {
   source  = "cloudnationhq/vnet/azure"
   version = "~> 9.0"
 
-  naming = local.naming
-
   vnet = {
     name                = module.naming.virtual_network.name
     location            = module.rg.groups.demo.location
@@ -40,7 +38,7 @@ module "network" {
 
 module "kv" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   vault = {
     name                = module.naming.key_vault.name_unique
@@ -48,6 +46,16 @@ module "kv" {
     resource_group_name = module.rg.groups.demo.name
 
     public_network_access_enabled = false
+
+    private_endpoints = {
+      default = {
+        name                            = module.naming.private_endpoint.name
+        subnet_resource_id              = module.network.subnets.sn1.id
+        private_dns_zone_resource_ids   = [module.private_dns.private_zones.vault.id]
+        private_service_connection_name = "kv"
+        subresource_name                = "vault"
+      }
+    }
   }
 }
 
@@ -67,30 +75,6 @@ module "private_dns" {
             registration_enabled = true
           }
         }
-      }
-    }
-  }
-}
-
-module "privatelink" {
-  source  = "cloudnationhq/pe/azure"
-  version = "~> 2.0"
-
-  resource_group_name = module.rg.groups.demo.name
-  location            = module.rg.groups.demo.location
-
-  endpoints = {
-    vault = {
-      name      = module.naming.private_endpoint.name
-      subnet_id = module.network.subnets.sn1.id
-
-      private_dns_zone_group = {
-        private_dns_zone_ids = [module.private_dns.private_zones.vault.id]
-      }
-
-      private_service_connection = {
-        private_connection_resource_id = module.kv.vault.id
-        subresource_names              = ["vault"]
       }
     }
   }
