@@ -337,6 +337,37 @@ Auto-generated via terraform-docs between markers. Never hand-edit between them.
 
 Driven by release-please from Conventional Commits. Never hand-write entries.
 
+---
+
+## 26. `moved` blocks — major version refactors
+
+When a major version bump renames or restructures resources, capture all `moved` blocks in a dedicated versioned file at the module root:
+
+```
+moved_v4_to_v5.tf
+moved_v5_to_v6.tf
+```
+
+- One file per major version transition — never append to a previous version's file
+- Do **not** put `moved` blocks inline in `main.tf`
+- Every resource rename, key change (`resource.foo` → `resource.this`), or collection conversion (`resource.this` → `resource.this["this"]`) that would otherwise cause a destroy/recreate gets a `moved` block here
+
+Example (`moved_v4_to_v5.tf`):
+
+```hcl
+moved {
+  from = azurerm_key_vault.keyvault
+  to   = azurerm_key_vault.this["this"]
+}
+
+moved {
+  from = azurerm_key_vault_secret.secrets
+  to   = azurerm_key_vault_secret.this
+}
+```
+
+`moved` blocks inside a reusable module work correctly for all callers on upgrade — Terraform resolves them relative to each module instance's address. Source: https://developer.hashicorp.com/terraform/language/modules/develop/refactoring
+
 - `feat:` → minor bump
 - `fix:` → patch bump
 - `feat!:` → major bump (breaking change)
