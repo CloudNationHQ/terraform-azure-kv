@@ -64,7 +64,7 @@ resource "azurerm_private_endpoint" "this" {
   private_service_connection {
     name                              = coalesce(each.value.private_service_connection_name, "${each.key}-connection")
     is_manual_connection              = coalesce(each.value.is_manual_connection, false)
-    private_connection_resource_id    = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
+    private_connection_resource_id    = each.value.private_connection_resource_alias != null ? null : (var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id)
     private_connection_resource_alias = each.value.private_connection_resource_alias
     subresource_names                 = each.value.subresource_name != null ? [each.value.subresource_name] : ["vault"]
     request_message                   = each.value.request_message
