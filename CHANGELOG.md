@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v5.0.0...v5.1.0) (2026-06-05)
+
+
+### Features
+
+* add private_connection_resource_alias and key release_policy schema ([#139](https://github.com/CloudNationHQ/terraform-azure-kv/issues/139)) ([3ebb9b1](https://github.com/CloudNationHQ/terraform-azure-kv/commit/3ebb9b1169a28f78b860db7abf2a181282bbd1ff))
+
 ## [5.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v4.3.0...v5.0.0) (2026-05-05)
 
 
