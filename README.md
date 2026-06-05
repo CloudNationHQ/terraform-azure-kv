@@ -37,11 +37,11 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (4.69.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 4.0)
 
-- <a name="provider_random"></a> [random](#provider\_random) (3.8.1)
+- <a name="provider_random"></a> [random](#provider\_random) (~> 3.6)
 
-- <a name="provider_tls"></a> [tls](#provider\_tls) (4.2.1)
+- <a name="provider_tls"></a> [tls](#provider\_tls) (~> 4.0)
 
 ## Resources
 
@@ -97,16 +97,17 @@ object({
       virtual_network_subnet_ids = optional(list(string))
     }))
     private_endpoints = optional(map(object({
-      name                            = optional(string)
-      subnet_resource_id              = string
-      subresource_name                = optional(string)
-      private_dns_zone_resource_ids   = optional(list(string))
-      application_security_group_ids  = optional(list(string))
-      custom_network_interface_name   = optional(string)
-      tags                            = optional(map(string))
-      private_service_connection_name = optional(string)
-      is_manual_connection            = optional(bool)
-      request_message                 = optional(string)
+      name                              = optional(string)
+      subnet_resource_id                = string
+      subresource_name                  = optional(string)
+      private_dns_zone_resource_ids     = optional(list(string))
+      application_security_group_ids    = optional(list(string))
+      custom_network_interface_name     = optional(string)
+      tags                              = optional(map(string))
+      private_service_connection_name   = optional(string)
+      private_connection_resource_alias = optional(string)
+      is_manual_connection              = optional(bool)
+      request_message                   = optional(string)
       ip_configurations = optional(map(object({
         name               = optional(string)
         private_ip_address = optional(string)
@@ -163,6 +164,10 @@ object({
           time_after_creation = optional(string)
           time_before_expiry  = optional(string)
         }))
+      }))
+      release_policy = optional(object({
+        json      = string
+        immutable = optional(bool)
       }))
     })))
     secrets = optional(object({
