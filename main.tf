@@ -301,11 +301,14 @@ resource "azurerm_key_vault_certificate" "this" {
       }
 
       key_properties {
-        exportable = certificate_policy.value.issuer == "Self" ? true : false
-        key_type   = certificate_policy.value.key_type
-        key_size   = certificate_policy.value.key_size
-        reuse_key  = certificate_policy.value.reuse_key
-        curve      = certificate_policy.value.curve
+        exportable = coalesce(
+          certificate_policy.value.exportable,
+          certificate_policy.value.issuer == "Self" ? true : false
+        )
+        key_type  = certificate_policy.value.key_type
+        key_size  = certificate_policy.value.key_size
+        reuse_key = certificate_policy.value.reuse_key
+        curve     = certificate_policy.value.curve
       }
 
       secret_properties {
