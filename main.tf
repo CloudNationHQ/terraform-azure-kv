@@ -74,7 +74,7 @@ resource "azurerm_private_endpoint" "this" {
     for_each = each.value.private_dns_zone_resource_ids != null ? { "this" = each.value.private_dns_zone_resource_ids } : {}
 
     content {
-      name                 = "default"
+      name                 = coalesce(each.value.private_dns_zone_group_name, "default")
       private_dns_zone_ids = private_dns_zone_group.value
     }
   }
