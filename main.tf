@@ -74,7 +74,7 @@ resource "azurerm_private_endpoint" "this" {
     for_each = each.value.private_dns_zone_resource_ids != null ? { "this" = each.value.private_dns_zone_resource_ids } : {}
 
     content {
-      name                 = "default"
+      name                 = coalesce(each.value.private_dns_zone_group_name, "default")
       private_dns_zone_ids = private_dns_zone_group.value
     }
   }
@@ -301,11 +301,14 @@ resource "azurerm_key_vault_certificate" "this" {
       }
 
       key_properties {
-        exportable = certificate_policy.value.issuer == "Self" ? true : false
-        key_type   = certificate_policy.value.key_type
-        key_size   = certificate_policy.value.key_size
-        reuse_key  = certificate_policy.value.reuse_key
-        curve      = certificate_policy.value.curve
+        exportable = coalesce(
+          certificate_policy.value.exportable,
+          certificate_policy.value.issuer == "Self" ? true : false
+        )
+        key_type  = certificate_policy.value.key_type
+        key_size  = certificate_policy.value.key_size
+        reuse_key = certificate_policy.value.reuse_key
+        curve     = certificate_policy.value.curve
       }
 
       secret_properties {

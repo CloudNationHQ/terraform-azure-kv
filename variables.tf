@@ -28,6 +28,7 @@ variable "vault" {
       subnet_resource_id                = string
       subresource_name                  = optional(string)
       private_dns_zone_resource_ids     = optional(list(string))
+      private_dns_zone_group_name       = optional(string)
       application_security_group_ids    = optional(list(string))
       custom_network_interface_name     = optional(string)
       tags                              = optional(map(string))
@@ -145,6 +146,7 @@ variable "vault" {
         password = optional(string)
       }))
       issuer             = optional(string)
+      exportable         = optional(bool)
       key_type           = optional(string)
       key_size           = optional(number)
       reuse_key          = optional(bool)
