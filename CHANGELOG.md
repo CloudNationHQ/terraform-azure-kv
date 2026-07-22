@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.2.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v5.1.0...v5.2.0) (2026-07-22)
+
+
+### Features
+
+* **deps:** bump golang.org/x/crypto from 0.45.0 to 0.52.0 in /tests ([#142](https://github.com/CloudNationHQ/terraform-azure-kv/issues/142)) ([9b0dd29](https://github.com/CloudNationHQ/terraform-azure-kv/commit/9b0dd2930738f3b1fbee96e3b19f22844ecb5c58))
+
+
+### Bug Fixes
+
+* exportable override ([#144](https://github.com/CloudNationHQ/terraform-azure-kv/issues/144)) ([083e17d](https://github.com/CloudNationHQ/terraform-azure-kv/commit/083e17d1d2cd21f7c5a8f323842d15173eaafc0d))
+
 ## [5.1.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v5.0.0...v5.1.0) (2026-06-05)
 
 
