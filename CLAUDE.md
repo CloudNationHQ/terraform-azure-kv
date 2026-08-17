@@ -105,26 +105,26 @@ var.tags
 ## 7. Type definitions
 
 - All inputs strictly typed — never `type = any`
-- Use `optional(string)` with no default argument inside nested objects
+- No deviation defaults — no `try()`-for-defaulting in `main.tf`. Provider default applies unless the caller sets the field, or a default is declared on the type in `variables.tf`
 - Never `optional(bool, true)` — silently sets production flags invisible to callers
-- Security-relevant flags must always be explicit: `purge_protection_enabled`, `public_network_access_enabled`
+- Security-relevant flags must always be explicit: `purge_protection_enabled`, `public_network_access_enabled` — no default argument, ever
 
-**Setting secure defaults at the resource level**
+**Setting defaults**
 
-When a property has a compliance or security-relevant default that should be enforced transparently, set it directly on the resource argument using `try()`:
+When a module wants to nudge a property away from the raw provider default (not security-relevant, just a sane fallback), declare the default on the type itself in `variables.tf`:
 
 ```hcl
-account_replication_type = try(var.storage.account_replication_type, "GRS")
+account_replication_type = optional(string, "GRS")
 ```
 
-This is the one valid use of `try()` for defaulting — applied at the resource level, not in the type definition. The variable stays `optional(string)` with no default argument, keeping the caller contract explicit, while the resource gets a safe fallback.
+`main.tf` then references `var.storage.account_replication_type` directly — no `try()`, no fallback logic in the resource block. `variables.tf` is the one place a deviation from the provider default is declared, so callers can read the contract in one spot instead of hunting through `main.tf`.
 
 Use this pattern for example:
 - Replication types (`"GRS"`, `"ZRS"`)
 - Retention periods
-- Any property where the Azure default is insecure or non-compliant and you want to enforce a better one without forcing the caller to always specify it
+- Any property where nudging the default is a convenience, not a compliance-critical guarantee
 
-Do not use `try()` this way for properties where the wrong default could silently misconfigure a resource — those must remain explicit and required.
+Do not give a default to properties where the wrong value could silently misconfigure a resource, or to anything security-relevant — those stay `optional(type)` with no default, and required/explicit at the call site.
 
 ---
 
