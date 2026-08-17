@@ -15,9 +15,9 @@ resource "azurerm_key_vault" "this" {
   tenant_id                       = coalesce(var.vault.tenant_id, data.azurerm_client_config.current.tenant_id)
   sku_name                        = coalesce(var.vault.sku_name, "standard")
   tags                            = coalesce(var.vault.tags, var.tags)
-  enabled_for_deployment          = coalesce(var.vault.enabled_for_deployment, true)
-  enabled_for_disk_encryption     = coalesce(var.vault.enabled_for_disk_encryption, true)
-  enabled_for_template_deployment = coalesce(var.vault.enabled_for_template_deployment, true)
+  enabled_for_deployment          = var.vault.enabled_for_deployment
+  enabled_for_disk_encryption     = var.vault.enabled_for_disk_encryption
+  enabled_for_template_deployment = var.vault.enabled_for_template_deployment
   purge_protection_enabled        = coalesce(var.vault.purge_protection_enabled, true)
   rbac_authorization_enabled      = coalesce(var.vault.rbac_authorization_enabled, true)
   public_network_access_enabled   = var.vault.public_network_access_enabled
