@@ -27,6 +27,11 @@ module "kv" {
     resource_group_name = module.rg.groups.demo.name
 
     secrets = {
+      predefined_string = {
+        connection_string = {
+          value = "example-connection-string"
+        }
+      }
       random_string = {
         example-1 = {
           length  = 24
