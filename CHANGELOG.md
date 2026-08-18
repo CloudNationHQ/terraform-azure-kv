@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v5.2.0...v6.0.0) (2026-08-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade to azurerm v5 ([#146](https://github.com/CloudNationHQ/terraform-azure-kv/issues/146))
+
+### Features
+
+* Upgrade to azurerm v5 ([#146](https://github.com/CloudNationHQ/terraform-azure-kv/issues/146)) ([8b1056b](https://github.com/CloudNationHQ/terraform-azure-kv/commit/8b1056b92d0fa827158dfd61db299c766446d123))
+
 ## [5.2.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v5.1.0...v5.2.0) (2026-07-22)
 
 
