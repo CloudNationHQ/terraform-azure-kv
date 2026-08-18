@@ -9,7 +9,7 @@ module "naming" {
 
 module "rg" {
   source  = "cloudnationhq/rg/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   groups = {
     demo = {
@@ -22,7 +22,7 @@ module "rg" {
 ## No admins
 module "kv1" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   vault = {
     enable_role_assignment = false
@@ -35,7 +35,7 @@ module "kv1" {
 ## Multiple admins
 module "kv2" {
   source  = "cloudnationhq/kv/azure"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   vault = {
     admins              = [data.azurerm_client_config.current.object_id]

@@ -1,4 +1,4 @@
-.PHONY: all install-tools validate fmt docs test test-parallel test-sequential test-local
+.PHONY: all install-tools validate fmt docs test test-parallel test-sequential test-local test-unit
 
 all: install-tools validate fmt docs
 
@@ -21,6 +21,15 @@ test-parallel:
 
 test-local:
 	cd tests && go test -v -timeout 60m -run '^TestApplyAllLocal$$' -args $(TEST_ARGS) .
+
+test-unit:
+	@if [ -n "$(file)" ] && [ ! -f "$(file)" ]; then \
+		echo "test-unit: no such test file: $(file)"; exit 1; \
+	fi
+	terraform init -backend=false
+	terraform test $(if $(file),-filter=$(file)) $(if $(verbose),-verbose)
+	@echo "Cleaning up initialization files..."
+	rm -rf .terraform terraform.tfstate terraform.tfstate.backup .terraform.lock.hcl
 
 docs:
 	@echo "Generating documentation for root and modules..."
