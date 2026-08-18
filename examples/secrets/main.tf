@@ -17,17 +17,6 @@ module "rg" {
   }
 }
 
-module "storage" {
-  source  = "cloudnationhq/sa/azure"
-  version = "~> 5.0"
-
-  storage = {
-    name                = module.naming.storage_account.name_unique
-    location            = module.rg.groups.demo.location
-    resource_group_name = module.rg.groups.demo.name
-  }
-}
-
 module "kv" {
   source  = "cloudnationhq/kv/azure"
   version = "~> 6.0"
@@ -38,11 +27,6 @@ module "kv" {
     resource_group_name = module.rg.groups.demo.name
 
     secrets = {
-      predefined_string = {
-        connection_string = {
-          value = module.storage.account.primary_connection_string
-        }
-      }
       random_string = {
         example-1 = {
           length  = 24

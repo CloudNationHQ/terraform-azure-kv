@@ -4,7 +4,7 @@ variable "vault" {
     name                            = string
     location                        = optional(string)
     resource_group_name             = optional(string)
-    rbac_authorization_enabled      = optional(bool)
+    rbac_authorization_enabled      = optional(bool, true)
     tenant_id                       = optional(string)
     sku_name                        = optional(string, "standard")
     tags                            = optional(map(string))
