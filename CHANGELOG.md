@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v6.0.0...v6.1.0) (2026-08-19)
+
+
+### Features
+
+* Add depends_on private endpoints for data plane actions ([#149](https://github.com/CloudNationHQ/terraform-azure-kv/issues/149)) ([1dc0def](https://github.com/CloudNationHQ/terraform-azure-kv/commit/1dc0def641ae01bc61dc48fd356d0a7b02c36251))
+
 ## [6.0.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v5.2.0...v6.0.0) (2026-08-18)
 
 
