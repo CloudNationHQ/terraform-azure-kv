@@ -114,7 +114,8 @@ resource "azurerm_key_vault_certificate_issuer" "this" {
   }
 
   depends_on = [
-    azurerm_role_assignment.admins
+    azurerm_role_assignment.admins,
+    azurerm_private_endpoint.this
   ]
 }
 
@@ -135,7 +136,8 @@ resource "azurerm_key_vault_certificate_contacts" "this" {
   }
 
   depends_on = [
-    azurerm_role_assignment.admins
+    azurerm_role_assignment.admins,
+    azurerm_private_endpoint.this
   ]
 }
 
@@ -271,7 +273,8 @@ resource "azurerm_key_vault_secret" "tls" {
   expiration_date = var.vault.secrets.tls_keys[trimsuffix(each.key, "-${each.value}")].expiration_date
 
   depends_on = [
-    azurerm_role_assignment.admins
+    azurerm_role_assignment.admins,
+    azurerm_private_endpoint.this
   ]
 }
 
@@ -349,7 +352,8 @@ resource "azurerm_key_vault_certificate" "this" {
     }
   }
   depends_on = [
-    azurerm_role_assignment.admins
+    azurerm_role_assignment.admins,
+    azurerm_private_endpoint.this
   ]
 }
 
