@@ -46,6 +46,4 @@ module "kv" {
       }
     }
   }
-
-  tags = { environment = "demo" }
 }

@@ -26,8 +26,4 @@ module "kv" {
     location            = module.rg.groups.demo.location
     resource_group_name = module.rg.groups.demo.name
   }
-
-  tags = {
-    environment = "demo"
-  }
 }

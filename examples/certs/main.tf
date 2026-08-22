@@ -56,10 +56,6 @@ module "kv" {
           emails    = ["admin@demo.org"]
           upns      = ["user@demo.org"]
         }
-
-        tags = {
-          environment = "demo"
-        }
       }
     }
   }
