@@ -342,7 +342,7 @@ Module is maintained by [these awesome contributors](https://github.com/cloudnat
 
 We welcome contributions from the community! Whether it's reporting a bug, suggesting a new feature, or submitting a pull request, your input is highly valued.
 
-For more information, please see our contribution [guidelines](./CONTRIBUTING.md). <br><br>
+For more information, please see our contribution [guidelines](./CONTRIBUTING.md).
 
 ## License
 
