@@ -397,7 +397,7 @@ resource "azurerm_key_vault_certificate" "this" {
         subject            = certificate_policy.value.subject
         validity_in_months = certificate_policy.value.validity_in_months
         key_usage          = certificate_policy.value.key_usage
-        extended_key_usage = (certificate_policy.value.extended_key_usage != null ? certificate_policy.value.extended_key_usage : [])
+        extended_key_usage = certificate_policy.value.extended_key_usage != null ? certificate_policy.value.extended_key_usage : []
 
         dynamic "subject_alternative_names" {
           for_each = certificate_policy.value.subject_alternative_names != null ? { "this" = certificate_policy.value.subject_alternative_names } : {}
