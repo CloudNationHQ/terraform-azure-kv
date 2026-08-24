@@ -4,21 +4,26 @@
 
 ## Features
 
-Capability to handle keys, secrets, and certificates.
+Capability to handle keys, secrets and certificates.
 
-Includes support for certificate issuers.
+Includes support for certificate issuers and contacts.
 
-Utilization of terratest for robust validation.
+Generates random passwords and tls key pairs and stores them as secrets.
 
-Supports key rotation policy for enhanced security and compliance.
+Supports write only secret values, keeping them out of state.
 
-Integrates seamlessly with private endpoint capabilities for direct and secure connectivity.
+Supports key rotation and release policies for enhanced security and compliance.
 
-## Private Endpoint
+Offers both the rbac permission model and access policies, including full permission shorthand.
 
-This module embeds private endpoint support directly (`vault.private_endpoints`). Embedding is the right choice when the Key Vault and its data-plane children (secrets, keys, certificates) are managed in the same Terraform apply with public network access disabled — Terraform has no network path to the vault's data plane without the PE in place during the same run.
+Optionally assigns key vault administrator to the deploying identity or configured administrators.
 
-When the PE belongs to a different state file or team (e.g. a platform networking team owns connectivity), use our standalone [terraform-azure-pe](https://github.com/CloudNationHQ/terraform-azure-pe) module instead and keep the vault publicly accessible or accept a two-phase apply. Both patterns are supported and the choice belongs to the caller.
+Provides firewall rules and inline private endpoints with private dns integration, data plane
+operations then require connectivity to that private network.
+
+Can manage content on an already existing vault.
+
+Utilization of terratest for robust validation, alongside native terraform tests with mocked providers.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -77,9 +82,9 @@ object({
     name                            = string
     location                        = optional(string)
     resource_group_name             = optional(string)
-    rbac_authorization_enabled      = optional(bool)
+    rbac_authorization_enabled      = optional(bool, true)
     tenant_id                       = optional(string)
-    sku_name                        = optional(string)
+    sku_name                        = optional(string, "standard")
     tags                            = optional(map(string))
     enabled_for_deployment          = optional(bool)
     enabled_for_disk_encryption     = optional(bool)
@@ -91,8 +96,8 @@ object({
     admins                          = optional(list(string))
     enable_role_assignment          = optional(bool)
     network_acls = optional(object({
-      bypass                     = optional(string)
-      default_action             = optional(string)
+      bypass                     = optional(string, "AzureServices")
+      default_action             = optional(string, "Deny")
       ip_rules                   = optional(list(string))
       virtual_network_subnet_ids = optional(list(string))
     }))
@@ -101,13 +106,13 @@ object({
       subnet_resource_id                = string
       subresource_name                  = optional(string)
       private_dns_zone_resource_ids     = optional(list(string))
-      private_dns_zone_group_name       = optional(string)
+      private_dns_zone_group_name       = optional(string, "default")
       application_security_group_ids    = optional(list(string))
       custom_network_interface_name     = optional(string)
       tags                              = optional(map(string))
       private_service_connection_name   = optional(string)
       private_connection_resource_alias = optional(string)
-      is_manual_connection              = optional(bool)
+      is_manual_connection              = optional(bool, false)
       request_message                   = optional(string)
       ip_configurations = optional(map(object({
         name               = optional(string)
@@ -189,10 +194,10 @@ object({
         lower            = optional(bool)
         upper            = optional(bool)
         special          = optional(bool)
-        min_lower        = optional(number)
-        min_upper        = optional(number)
-        min_special      = optional(number)
-        min_numeric      = optional(number)
+        min_lower        = optional(number, 5)
+        min_upper        = optional(number, 7)
+        min_special      = optional(number, 4)
+        min_numeric      = optional(number, 5)
         override_special = optional(string)
         keepers          = optional(map(string))
         tags             = optional(map(string))
@@ -337,11 +342,7 @@ Module is maintained by [these awesome contributors](https://github.com/cloudnat
 
 We welcome contributions from the community! Whether it's reporting a bug, suggesting a new feature, or submitting a pull request, your input is highly valued.
 
-For more information, please see our contribution [guidelines](./CONTRIBUTING.md). <br><br>
-
-<a href="https://github.com/cloudnationhq/terraform-azure-kv/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=cloudnationhq/terraform-azure-kv" />
-</a>
+For more information, please see our contribution [guidelines](./CONTRIBUTING.md).
 
 ## License
 
@@ -351,4 +352,3 @@ MIT Licensed. See [LICENSE](https://github.com/cloudnationhq/terraform-azure-kv/
 
 - [Documentation](https://learn.microsoft.com/en-us/azure/key-vault/)
 - [Rest Api](https://learn.microsoft.com/en-us/rest/api/keyvault/)
-- [Rest Api Specs](https://github.com/Azure/azure-rest-api-specs/tree/1f449b5a17448f05ce1cd914f8ed75a0b568d130/specification/keyvault)

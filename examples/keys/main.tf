@@ -44,10 +44,6 @@ module "kv" {
             time_after_creation = "P83D"
           }
         }
-
-        tags = {
-          environment = "demo"
-        }
       }
     }
   }
