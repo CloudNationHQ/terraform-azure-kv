@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v6.1.0...v6.2.0) (2026-08-24)
+
+
+### Features
+
+* several cleanups and added alz compliant example ([#151](https://github.com/CloudNationHQ/terraform-azure-kv/issues/151)) ([96ec3ab](https://github.com/CloudNationHQ/terraform-azure-kv/commit/96ec3ab68ae676ff2a2760710996f531a31a1099))
+
 ## [6.1.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v6.0.0...v6.1.0) (2026-08-19)
 
 
