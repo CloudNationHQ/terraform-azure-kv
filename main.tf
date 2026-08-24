@@ -182,7 +182,10 @@ resource "azurerm_key_vault_certificate_contacts" "this" {
 resource "azurerm_key_vault_key" "this" {
   for_each = var.vault.keys != null ? var.vault.keys : {}
 
-  name            = coalesce(each.value.name, replace(each.key, "_", "-"))
+  name = coalesce(
+    each.value.name, replace(each.key, "_", "-")
+  )
+
   key_vault_id    = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
   key_type        = each.value.key_type
   key_size        = each.value.key_size
@@ -190,7 +193,10 @@ resource "azurerm_key_vault_key" "this" {
   curve           = each.value.curve
   not_before_date = each.value.not_before_date
   expiration_date = each.value.expiration_date
-  tags            = coalesce(each.value.tags, var.tags)
+
+  tags = coalesce(
+    each.value.tags, var.tags
+  )
 
   dynamic "rotation_policy" {
     for_each = each.value.rotation_policy != null ? { "this" = each.value.rotation_policy } : {}
