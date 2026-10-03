@@ -6,7 +6,7 @@ data "azurerm_key_vault" "this" {
   name = var.vault.name
 
   resource_group_name = coalesce(
-    var.vault.resource_group_name, var.resource_group_name
+    var.resource_group_name, var.vault.resource_group_name
   )
 }
 
