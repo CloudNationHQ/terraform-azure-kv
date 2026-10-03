@@ -108,3 +108,38 @@ run "managed_vault_when_flag_unset" {
     )
   }
 }
+
+run "admins_description_reaches_role_assignment" {
+  command = plan
+
+  variables {
+    vault = {
+      name                = "kv-app"
+      resource_group_name = "rg-kv"
+      admins              = ["11111111-1111-1111-1111-111111111111"]
+      admins_description  = "Key Vault administrators"
+    }
+  }
+
+  assert {
+    condition     = azurerm_role_assignment.admins["0"].description == "Key Vault administrators"
+    error_message = "vault.admins_description must be set on the admin role assignment"
+  }
+}
+
+run "admins_description_defaults_to_null" {
+  command = plan
+
+  variables {
+    vault = {
+      name                = "kv-app"
+      resource_group_name = "rg-kv"
+      admins              = ["11111111-1111-1111-1111-111111111111"]
+    }
+  }
+
+  assert {
+    condition     = azurerm_role_assignment.admins["0"].description == null
+    error_message = "without admins_description the role assignment must have no description, so existing users see no change"
+  }
+}
