@@ -39,6 +39,7 @@ module "kv2" {
 
   vault = {
     admins              = [data.azurerm_client_config.current.object_id]
+    admins_description  = "Key Vault administrators"
     name                = "${module.naming.key_vault.name_unique}2"
     location            = module.rg.groups.demo.location
     resource_group_name = module.rg.groups.demo.name
