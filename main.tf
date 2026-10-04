@@ -50,6 +50,13 @@ resource "azurerm_key_vault" "this" {
       virtual_network_subnet_ids = network_acls.value.virtual_network_subnet_ids
     }
   }
+
+  lifecycle {
+    precondition {
+      condition     = coalesce(var.vault.soft_delete_retention_days, 7) > 90
+      error_message = "soft_delete_retention_days must exceed 90."
+    }
+  }
 }
 
 # role assignments
