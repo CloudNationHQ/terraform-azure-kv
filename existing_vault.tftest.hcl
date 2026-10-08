@@ -108,3 +108,21 @@ run "managed_vault_when_flag_unset" {
     )
   }
 }
+
+run "admins_skip_service_principal_aad_check_is_passed_through" {
+  command = plan
+
+  variables {
+    vault = {
+      name                                    = "kv-app"
+      resource_group_name                     = "rg-kv"
+      admins                                  = ["11111111-1111-1111-1111-111111111111"]
+      admins_skip_service_principal_aad_check = true
+    }
+  }
+
+  assert {
+    condition     = azurerm_role_assignment.admins["0"].skip_service_principal_aad_check == true
+    error_message = "vault.admins_skip_service_principal_aad_check must reach the admin role assignment"
+  }
+}
