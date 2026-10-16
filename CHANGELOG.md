@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v6.2.0...v6.2.1) (2026-10-16)
+
+
+### Bug Fixes
+
+* remove introduced bug on precondition ([#156](https://github.com/CloudNationHQ/terraform-azure-kv/issues/156)) ([4c19437](https://github.com/CloudNationHQ/terraform-azure-kv/commit/4c19437d2a9712925211425afb9b4940cd22ed3a))
+
 ## [6.2.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v6.1.0...v6.2.0) (2026-08-24)
 
 
