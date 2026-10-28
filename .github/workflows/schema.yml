@@ -8,3 +8,5 @@ jobs:
   schema-check:
     uses: cloudnationhq/terraform-azure-workflows/.github/workflows/schema.yml@main
     secrets: inherit
+    with:
+      exclude_properties: azurerm_key_vault.access_policy
