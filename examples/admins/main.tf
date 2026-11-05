@@ -38,9 +38,10 @@ module "kv2" {
   version = "~> 6.0"
 
   vault = {
-    admins              = [data.azurerm_client_config.current.object_id]
-    name                = "${module.naming.key_vault.name_unique}2"
-    location            = module.rg.groups.demo.location
-    resource_group_name = module.rg.groups.demo.name
+    admins                                  = [data.azurerm_client_config.current.object_id]
+    admins_skip_service_principal_aad_check = true
+    name                                    = "${module.naming.key_vault.name_unique}2"
+    location                                = module.rg.groups.demo.location
+    resource_group_name                     = module.rg.groups.demo.name
   }
 }
