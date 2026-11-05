@@ -108,3 +108,64 @@ run "managed_vault_when_flag_unset" {
     )
   }
 }
+
+run "admins_description_reaches_role_assignment" {
+  command = plan
+
+  variables {
+    vault = {
+      name                = "kv-app"
+      resource_group_name = "rg-kv"
+      admins              = ["11111111-1111-1111-1111-111111111111"]
+      admins_description  = "Key Vault administrators"
+    }
+  }
+
+  assert {
+    condition = azurerm_role_assignment.admins["0"].description == "Key Vault administrators"
+    error_message = format(
+      "vault.admins_description must be set on the admin role assignment, got %q",
+      coalesce(azurerm_role_assignment.admins["0"].description, "<null>"),
+    )
+  }
+}
+
+run "admins_description_reaches_fallback_assignment" {
+  command = plan
+
+  variables {
+    vault = {
+      name                = "kv-app"
+      resource_group_name = "rg-kv"
+      admins_description  = "Key Vault administrators"
+    }
+  }
+
+  assert {
+    condition = azurerm_role_assignment.admins["00000000-0000-0000-0000-000000000000"].description == "Key Vault administrators"
+    error_message = format(
+      "without vault.admins the fallback (current client) assignment must also get admins_description, got %q",
+      coalesce(azurerm_role_assignment.admins["00000000-0000-0000-0000-000000000000"].description, "<null>"),
+    )
+  }
+}
+
+run "admins_description_has_no_implicit_default" {
+  command = plan
+
+  variables {
+    vault = {
+      name                = "kv-app"
+      resource_group_name = "rg-kv"
+      admins              = ["11111111-1111-1111-1111-111111111111"]
+    }
+  }
+
+  assert {
+    condition = azurerm_role_assignment.admins["0"].description == null
+    error_message = format(
+      "admins_description must not get a default value, got %q",
+      coalesce(azurerm_role_assignment.admins["0"].description, "<null>"),
+    )
+  }
+}
