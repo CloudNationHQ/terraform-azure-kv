@@ -108,3 +108,25 @@ run "managed_vault_when_flag_unset" {
     )
   }
 }
+
+run "admins_description_is_passed_through" {
+  command = plan
+
+  variables {
+    vault = {
+      name                = "kv-app"
+      resource_group_name = "rg-kv"
+      use_existing        = true
+      admins              = ["11111111-1111-1111-1111-111111111111"]
+      admins_description  = "Key Vault administrators"
+    }
+  }
+
+  assert {
+    condition = azurerm_role_assignment.admins["0"].description == "Key Vault administrators"
+    error_message = format(
+      "vault.admins_description must reach the admin role assignment, got %q",
+      azurerm_role_assignment.admins["0"].description,
+    )
+  }
+}
