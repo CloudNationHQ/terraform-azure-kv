@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.3.0](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v6.2.1...v6.3.0) (2026-11-11)
+
+
+### Features
+
+* **deps:** bump github.com/klauspost/compress in /tests ([#158](https://github.com/CloudNationHQ/terraform-azure-kv/issues/158)) ([2bb7a9f](https://github.com/CloudNationHQ/terraform-azure-kv/commit/2bb7a9f09fe9f6a444c9158ab6035d774be344a0))
+* support description on admin role assignments ([#154](https://github.com/CloudNationHQ/terraform-azure-kv/issues/154)) ([e274bf0](https://github.com/CloudNationHQ/terraform-azure-kv/commit/e274bf0e15200f43fa2575b1a1b1b2da39785af7))
+
 ## [6.2.1](https://github.com/CloudNationHQ/terraform-azure-kv/compare/v6.2.0...v6.2.1) (2026-10-16)
 
 
