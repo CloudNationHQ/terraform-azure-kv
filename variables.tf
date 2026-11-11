@@ -16,6 +16,7 @@ variable "vault" {
     soft_delete_retention_days      = optional(number)
     use_existing                    = optional(bool)
     admins                          = optional(list(string))
+    admins_description              = optional(string)
     enable_role_assignment          = optional(bool)
     network_acls = optional(object({
       bypass                     = optional(string, "AzureServices")

@@ -64,6 +64,7 @@ resource "azurerm_role_assignment" "admins" {
   scope                = var.vault.use_existing == true ? data.azurerm_key_vault.this["this"].id : azurerm_key_vault.this["this"].id
   role_definition_name = "Key Vault Administrator"
   principal_id         = each.value
+  description          = var.vault.admins_description
 }
 
 # private endpoints
