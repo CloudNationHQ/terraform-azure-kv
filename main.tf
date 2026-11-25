@@ -85,6 +85,7 @@ resource "azurerm_private_endpoint" "this" {
 
   subnet_id                     = each.value.subnet_resource_id
   custom_network_interface_name = each.value.custom_network_interface_name
+  ip_version_type               = each.value.ip_version_type
 
   tags = coalesce(
     each.value.tags, var.tags
